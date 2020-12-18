@@ -2,12 +2,12 @@ import React from 'react';
 import {useField, FieldConfig} from "formik";
 
 interface InputProps extends FieldConfig {
-  label: string;
-  id: string;
+  label?: string;
+  id?: string;
   className?: string;
 }
 
-export const Index: React.FC<InputProps> = ({ label, ...props }) => {
+export const Input: React.FC<InputProps> = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <>

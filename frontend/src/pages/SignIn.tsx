@@ -1,10 +1,10 @@
 import React from 'react';
-
+import SignInForm from "../components/forms/signIn";
 interface Props {}
 
 const SignIn: React.FC<Props> = () => (
-  <div>
-   so far so good
+  <div className={'center'}>
+    <SignInForm />
   </div>
 );
 
