@@ -9,19 +9,19 @@ const SignInForm = () => {
       <h1>Sign in</h1>
       <Formik
         initialValues={{
-          login: '',
+          username: '',
           password: '',
         }}
         onSubmit={(values => console.log(values))}
         validationSchema={Yup.object({
-          login: Yup.string().required(),
+          username: Yup.string().required(),
           password: Yup.string().required(),
         })}
       >
         <Form>
           <Input
-            label={'login'}
-            name={'login'}
+            label={'username'}
+            name={'username'}
             type={'text'}
           />
           <Input
