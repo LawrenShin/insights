@@ -1,7 +1,11 @@
 import React from 'react';
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
-import {CompaniesActionType, listSelect, StateType as CompaniesState} from './CompaniesDuck';
+import {
+  CompaniesActionType,
+  listSelect,
+  StateType as CompaniesState
+} from './CompaniesDuck';
 
 import ListComponent from '../components/list';
 import companiesMock from '../mocks/companies';

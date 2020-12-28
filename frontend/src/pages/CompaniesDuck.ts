@@ -1,4 +1,5 @@
 import { takeEvery, put } from "redux-saga/effects";
+// TODO: better get rid of it
 import * as tsActionCreator from 'typescript-action-creator';
 import { ListItemType } from "../components/ListItems/types";
 
