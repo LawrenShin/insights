@@ -1,16 +1,17 @@
 import React from 'react';
 import {Avatar, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@material-ui/core";
-import {Delete as DeleteIcon, FolderOpen as FolderIcon} from "@material-ui/icons";
+import {Delete as DeleteIcon} from "@material-ui/icons";
 import {CompanyType} from "./types";
+import BusinessIcon from '@material-ui/icons/Business';
 
-const CompanyListItem = (Company: CompanyType): JSX.Element => <ListItem button>
+const CompanyListItem = (company: CompanyType): JSX.Element => <ListItem button>
   <ListItemAvatar>
     <Avatar>
-      <FolderIcon />
+      <BusinessIcon />
     </Avatar>
   </ListItemAvatar>
   <ListItemText
-    primary="Single-line item"
+    primary={company.Company}
   />
   <ListItemSecondaryAction>
     <IconButton edge="end" aria-label="delete">

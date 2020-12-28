@@ -20,12 +20,15 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
       maxWidth: '20%',
+      backgroundColor: '#FFF',
+      color: 'black',
     },
     demo: {
       backgroundColor: theme.palette.background.paper,
     },
     title: {
-      margin: theme.spacing(4, 0, 2),
+      margin: theme.spacing(0, 0, 2),
+      padding: theme.spacing(2, 2, 0),
     },
   }),
 );
@@ -45,17 +48,15 @@ export default function ListComponent (props: Props) {
   const {title, data, elementGen} = props;
 
   return (
-    <>
-      <Box className={classes.root}>
-        <Typography variant="h6" className={classes.title}>
-          {title}
-        </Typography>
-        <div className={classes.demo}>
-          <List>
-            {generate(elementGen, data)}
-          </List>
-        </div>
-      </Box>
-    </>
+    <Box className={classes.root}>
+      <Typography variant="h6" className={classes.title}>
+        {title}
+      </Typography>
+      <div className={classes.demo}>
+        <List>
+          {generate(elementGen, data)}
+        </List>
+      </div>
+    </Box>
   );
 }
