@@ -17,7 +17,11 @@ const CompanyListItem = (company: CompanyType, handlers: any): JSX.Element => <L
     primary={company.Company}
   />
   <ListItemSecondaryAction>
-    <IconButton edge="end" aria-label="delete">
+    <IconButton
+      edge="end"
+      aria-label="delete"
+      onClick={() => handlers.deleteCompany(company.Company)}
+    >
       <DeleteIcon />
     </IconButton>
   </ListItemSecondaryAction>
