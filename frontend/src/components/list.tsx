@@ -11,6 +11,7 @@ import {ListItemType, ListItemTypeGen} from '../components/ListItems/types';
 interface Props {
   data: ListItemType[];
   elementGen: ListItemTypeGen;
+  elementClick: any;
   title: string;
   keyVal: string;
 }
@@ -33,10 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function generate(elementGen: ListItemTypeGen, data: ListItemType[]) {
+function generate(elementGen: ListItemTypeGen, data: ListItemType[], elementClick: any) {
 
   return data.map((value): React.ReactElement => {
-    return React.cloneElement(elementGen(value), {
+    return React.cloneElement(elementGen(value, elementClick), {
       key: uuidv4(),
     })
   });
@@ -45,7 +46,7 @@ function generate(elementGen: ListItemTypeGen, data: ListItemType[]) {
 
 export default function ListComponent (props: Props) {
   const classes = useStyles();
-  const {title, data, elementGen} = props;
+  const {title, data, elementGen, elementClick} = props;
 
   return (
     <Box className={classes.root}>
@@ -54,7 +55,7 @@ export default function ListComponent (props: Props) {
       </Typography>
       <div className={classes.demo}>
         <List>
-          {generate(elementGen, data)}
+          {generate(elementGen, data, elementClick)}
         </List>
       </div>
     </Box>

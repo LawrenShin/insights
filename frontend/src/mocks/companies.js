@@ -24,7 +24,7 @@ module.exports = [
     "EduInstitut":"0",
     "Religion":"0",
     "Sexuality":"0",
-    "Married":"0"
+    "Married":"0",
   },
   {
     "Company":"Alimentation Couche Tard Inc. Cl B",

@@ -4,7 +4,10 @@ import {Delete as DeleteIcon} from "@material-ui/icons";
 import {CompanyType} from "./types";
 import BusinessIcon from '@material-ui/icons/Business';
 
-const CompanyListItem = (company: CompanyType): JSX.Element => <ListItem button>
+const CompanyListItem = (company: CompanyType, handlers: any): JSX.Element => <ListItem
+  button
+  onClick={() => handlers.selectCompany(company.Company)}
+>
   <ListItemAvatar>
     <Avatar>
       <BusinessIcon />

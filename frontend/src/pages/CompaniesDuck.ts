@@ -1,7 +1,5 @@
-import { takeEvery, put } from "redux-saga/effects";
-// TODO: better get rid of it
-import * as tsActionCreator from 'typescript-action-creator';
 import { ListItemType } from "../components/ListItems/types";
+import {CreateAction} from "../store/action";
 
 // types
 export enum CompaniesListActionTypes {
@@ -22,17 +20,10 @@ export interface ListSelectType {
 export type CompaniesActionType = ListDeleteType | ListSelectType;
 
 //actions
-export const listDelete = tsActionCreator.createAction(CompaniesListActionTypes.LIST_DELETE);
-export const listSelect = tsActionCreator.createAction(CompaniesListActionTypes.LIST_SELECT, (id: string | number) => id);
+export const listDelete = (id: string | number) => CreateAction(CompaniesListActionTypes.LIST_DELETE, id);
+export const listSelect = (id: string | number) => CreateAction(CompaniesListActionTypes.LIST_SELECT, id);
 
 // sagas
-export function* ListSelectSaga (action: CompaniesActionType) {
-  // yield put(listSelect)
-}
-
-export function* WatchListSelectSaga(){
-  yield takeEvery('LIST_SELECT', ListSelectSaga);
-}
 
 // reducer
 export interface StateType {
@@ -46,10 +37,10 @@ const InitState = {
 }
 
 export function Reducer(state: StateType = InitState, action: CompaniesActionType) {
-  if (tsActionCreator.isActionType(action, listSelect)) {
-    console.log('im here');
-    return {...state, selected: action.payload}
-  };
+  const {type, payload} = action;
+  if (type === CompaniesListActionTypes.LIST_SELECT) {
+    return {...state, selected: payload}
+  }
 
   return state;
 }
