@@ -14,13 +14,13 @@ const CompanyListItem = (company: CompanyType, handlers: any): JSX.Element => <L
     </Avatar>
   </ListItemAvatar>
   <ListItemText
-    primary={company.Company}
+    primary={company.companyName}
   />
   <ListItemSecondaryAction>
     <IconButton
       edge="end"
       aria-label="delete"
-      onClick={() => handlers.deleteCompany(company.Company)}
+      onClick={() => handlers.deleteCompany(company.companyName)}
     >
       <DeleteIcon />
     </IconButton>

@@ -1,5 +1,5 @@
 module.exports = [{
-  Company: 'Company name',
+  companyName: 'Company name',
   addressType: 'some rnd address',
   street: 'Long street',
   postcode: '56148123',
