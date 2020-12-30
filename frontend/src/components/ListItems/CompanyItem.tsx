@@ -6,7 +6,7 @@ import BusinessIcon from '@material-ui/icons/Business';
 
 const CompanyListItem = (company: CompanyType, handlers: any): JSX.Element => <ListItem
   button
-  onClick={() => handlers.selectCompany(company.Company)}
+  onClick={() => handlers.selectCompany(company)}
 >
   <ListItemAvatar>
     <Avatar>

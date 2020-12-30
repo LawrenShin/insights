@@ -1,34 +1,38 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {
-  CompaniesActionType, listDelete,
+  listDelete,
   listSelect,
-  StateType as CompaniesState
 } from './CompaniesDuck';
 
+import Content from "../components/content";
 import ListComponent from '../components/list';
-import companiesMock from '../mocks/companies';
 import CompanyListItem from '../components/ListItems/CompanyItem';
-import {CompanyType} from "../components/ListItems/types";
 import {RootState} from "../store/rootReducer";
+import {Box} from "@material-ui/core";
+
 
 const Companies = (props: any) => {
-  const {selectCompany, deleteCompany} = props;
+  const {
+    data: companiesList, selected: company,
+    selectCompany, deleteCompany,
+  } = props;
 
   return (
-    <>
-      {/*TODO: fix type data*/}
+    <Box display={'flex'} height={'fit-content'} minHeight={'100vh'}>
       <ListComponent
-        data={companiesMock as CompanyType[]}
+        data={companiesList}
         elementGen={CompanyListItem}
         elementClick={{selectCompany, deleteCompany}}
         title={'List of companies'}
         keyVal={'Company'}
       />
-    </>
+      {company && <Content title={'Company details'} data={company} />}
+    </Box>
   );
 }
+
 
 const mapStateToProps = ({ CompaniesListReducer: { data, selected } }: RootState) => ({
   data,

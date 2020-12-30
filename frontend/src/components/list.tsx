@@ -3,10 +3,12 @@ import { v4 as uuidv4} from 'uuid';
 import {
   Box,
   Typography,
-  List,
+  List, Tooltip, Fab,
 } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {Add as AddIcon} from '@material-ui/icons';
 import {ListItemType, ListItemTypeGen} from '../components/ListItems/types';
+
 
 interface Props {
   data: ListItemType[];
@@ -23,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: '20%',
       backgroundColor: '#FFF',
       color: 'black',
+      borderRight: '1px solid #CCC',
     },
     demo: {
       backgroundColor: theme.palette.background.paper,
@@ -31,6 +34,11 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(0, 0, 2),
       padding: theme.spacing(2, 2, 0),
     },
+    fab: {
+      margin: theme.spacing(0, 0, 0, 3),
+      width: '36px',
+      height: '36px',
+    }
   }),
 );
 
@@ -50,9 +58,16 @@ export default function ListComponent (props: Props) {
 
   return (
     <Box className={classes.root}>
-      <Typography variant="h6" className={classes.title}>
-        {title}
-      </Typography>
+      <>
+        <Typography variant="h6" className={classes.title}>
+          {title}
+          <Tooltip title="Add" aria-label="add">
+            <Fab color="primary" className={classes.fab}>
+              <AddIcon fontSize={'small'} />
+            </Fab>
+          </Tooltip>
+        </Typography>
+      </>
       <div className={classes.demo}>
         <List>
           {generate(elementGen, data, elementClick)}
