@@ -1,6 +1,6 @@
 interface Creds {
-  UserName: string;
-  Password: string;
+  username: string;
+  password: string;
 }
 
 export async function fetchToken(url: string, creds: Creds) {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import {Input} from '../fields';
+import {fetchToken} from '../api/index';
 
 const SignInForm = () => {
   return (
@@ -12,7 +13,7 @@ const SignInForm = () => {
           username: '',
           password: '',
         }}
-        onSubmit={(values => console.log(values))}
+        onSubmit={(values =>   fetchToken('', values))}
         validationSchema={Yup.object({
           username: Yup.string().required(),
           password: Yup.string().required(),

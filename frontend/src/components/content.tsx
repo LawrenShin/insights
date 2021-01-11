@@ -3,6 +3,7 @@ import {Box, Fab, Tooltip, Typography} from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {Edit as EditIcon} from "@material-ui/icons";
 
+// TODO: move in separate file
 const useStyles = makeStyles(
   (theme: Theme) => createStyles({
     root: {
