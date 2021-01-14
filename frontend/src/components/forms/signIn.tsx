@@ -1,10 +1,17 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import {Input} from '../fields';
-import {fetchToken} from '../api/index';
+import {Dispatch} from "redux";
+import {Creds, TokenActionTypes} from "./types";
+import {CreateAction} from "../../store/action";
 
-const SignInForm = () => {
+interface Props {
+  fetchToken: (creds: Creds) => void;
+}
+
+const SignInForm = (props: Props) => {
   return (
     <div>
       <h1>Sign in</h1>
@@ -13,7 +20,7 @@ const SignInForm = () => {
           username: '',
           password: '',
         }}
-        onSubmit={(values =>   fetchToken('', values))}
+        onSubmit={values => props.fetchToken(values)}
         validationSchema={Yup.object({
           username: Yup.string().required(),
           password: Yup.string().required(),
@@ -39,4 +46,11 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+const connector = connect(
+  undefined,
+  (dispatch: Dispatch) => ({
+    fetchToken: (creds: Creds) => dispatch(CreateAction(TokenActionTypes.FETCH_TOKEN, creds)),
+  })
+)
+
+export default connector(SignInForm);
