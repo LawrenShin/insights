@@ -2,9 +2,9 @@ import React from "react";
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
+  // Route,
 } from "react-router-dom";
-// import PrivateRoute from './PrivateRoute';
+import PrivateRoute from './private';
 import SignIn from '../pages/SignIn';
 import Companies from '../pages/Companies';
 // import NotFound from "../NotFound";
@@ -12,9 +12,9 @@ import Companies from '../pages/Companies';
 const AppRouter = () => (
   <Router>
     <Switch>
-      {/*<Route exact path='/' component={SignIn} isPrivate />*/}
-      <Route exact path='/sign_in' component={SignIn} isPrivate={false} />
-      <Route exact path='/companies' component={Companies} isPrivate={false} />
+      <PrivateRoute exact path='/' component={SignIn} isPrivate />
+      <PrivateRoute exact path='/sign_in' component={SignIn} />
+      <PrivateRoute exact path='/companies' component={Companies} isPrivate />
     {/* <Route component={NotFound} /> */}
     </Switch>
   </Router>
