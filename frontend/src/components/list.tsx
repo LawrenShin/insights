@@ -70,7 +70,7 @@ export default function ListComponent (props: Props) {
       </>
       <div className={classes.demo}>
         <List>
-          {generate(elementGen, data, elementClick)}
+          {data && generate(elementGen, data, elementClick)}
         </List>
       </div>
     </Box>

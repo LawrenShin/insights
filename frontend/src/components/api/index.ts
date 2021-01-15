@@ -1,7 +1,8 @@
 import {Creds, Token} from "../forms/types";
+import {ListRequestConfig} from "../../components/listDuck";
 
 
-const host = 'https://xzmkcrhmk0.execute-api.us-east-2.amazonaws.com';
+const host = 'https://xzmkcrhmk0.execute-api.us-east-2.amazonaws.com/Prod';
 
 const getHeaders = () => ({
   'Content-Type': 'application/json',
@@ -27,15 +28,16 @@ const get = (url: string, params?: string) => fetch(`${host}/${url}/${params ? '
 
 
 export async function fetchToken(creds: Creds) {
-  const response = await post(`Prod/login`, creds);
+  const response = await post(`login`, creds);
   return await response.json();
 }
 
-export async function fetchCompanies() {
-  // TODO: move params
-  const response = await get(`Prod/companies`, 'page_size=1&page_index=1');
+export async function fetchCompanies(params: string) {
+  const response = await get(`companies`, params);
+  return await response.json();
+}
 
-  console.log(response, 'res');
-
+export async function fetchList(config: ListRequestConfig) {
+  const response = await get(config.url, config?.params);
   return await response.json();
 }

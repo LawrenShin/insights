@@ -1,7 +1,7 @@
 import React from "react";
 
 export interface CompanyType {
-  [key: string]: string | number | null | string[] | number[] | boolean;
+  [key: string]: string | number | null | string[] | number[] | boolean | {};
 }
 
 export interface CompanyHandlers {

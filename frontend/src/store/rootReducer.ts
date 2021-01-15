@@ -1,5 +1,5 @@
 import {combineReducers} from "redux";
-import {Reducer as CompaniesListReducer} from '../pages/CompaniesDuck';
+import {Reducer as CompaniesListReducer} from '../components/listDuck';
 import {Reducer as SignInReducer} from '../components/forms/signInDuck';
 
 const rootReducer = combineReducers({
