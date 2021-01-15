@@ -1,30 +1,36 @@
 import React from 'react';
 import {Avatar, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@material-ui/core";
 import {Delete as DeleteIcon} from "@material-ui/icons";
-import {CompanyType} from "./types";
+import {ListItemType} from "./types";
 import BusinessIcon from '@material-ui/icons/Business';
 
-const CompanyListItem = (company: CompanyType, handlers: any): JSX.Element => <ListItem
-  button
-  onClick={() => handlers.selectCompany(company)}
->
-  <ListItemAvatar>
-    <Avatar>
-      <BusinessIcon />
-    </Avatar>
-  </ListItemAvatar>
-  <ListItemText
-    primary={company.companyName}
-  />
-  <ListItemSecondaryAction>
-    <IconButton
-      edge="end"
-      aria-label="delete"
-      onClick={() => handlers.deleteCompany(company.companyName)}
+const CompanyListItem = (company: ListItemType, handlers: any): JSX.Element => {
+  const companyNameList = Array.isArray(company?.CompanyNames) ? company?.CompanyNames[0] as any : '';
+
+  return (
+    <ListItem
+      button
+      onClick={() => handlers.selectCompany(company)}
     >
-      <DeleteIcon />
-    </IconButton>
-  </ListItemSecondaryAction>
-</ListItem>;
+      <ListItemAvatar>
+        <Avatar>
+          <BusinessIcon />
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={companyNameList?.Name}
+      />
+      <ListItemSecondaryAction>
+        <IconButton
+          edge="end"
+          aria-label="delete"
+          onClick={() => handlers.deleteCompany(company.companyName)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
+    </ListItem>
+  );
+}
 
 export default CompanyListItem;

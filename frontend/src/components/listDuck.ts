@@ -1,4 +1,4 @@
-import { ListItemType } from "../components/ListItems/types";
+import {ListItemType} from "../components/ListItems/types";
 import {CreateAction} from "../store/action";
 import {RequestStatus} from "../components/api/types";
 import {call, put, takeLatest} from "redux-saga/effects";
@@ -63,7 +63,7 @@ export const loadListFail = (error: string) => CreateAction(ListActionTypes.LIST
 
 
 // sagas
-export function* workerSaga(action: ListActionType) {
+export function* workerSaga( action: ListActionType ) {
   try {
     const list = yield call(fetchList, action.payload as ListRequestConfig);
     yield put(loadSuccess(list));
@@ -86,12 +86,36 @@ const initState = {
   data: initData,
   selected: null,
 }
-
+// TODO: figure out how to make it reusable
 export function Reducer(state: StateType = initState, action: ListActionType) {
 
   const {type, payload} = action;
 
-  if (type === ListActionTypes.LIST_SELECT) {
+  if (type === ListActionTypes.LIST_LOAD) return {
+    ...state,
+    data: {
+      ...state.data,
+      status: RequestStatus.LOADING,
+    }
+  }
+  if (type === ListActionTypes.LIST_LOAD_SUCCESS) return {
+    ...state,
+    data: {
+      ...state.data,
+      data: action.payload,
+      status: RequestStatus.STILL,
+    }
+  }
+  if (type === ListActionTypes.LIST_LOAD_FAIL) return {
+    ...state,
+    data: {
+      ...state.data,
+      error: action.payload,
+      status: RequestStatus.FAIL,
+    }
+  }
+
+    if (type === ListActionTypes.LIST_SELECT) {
     return {...state, selected: payload}
   }
   if (type === ListActionTypes.LIST_DELETE) {
