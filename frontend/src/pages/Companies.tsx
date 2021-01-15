@@ -34,6 +34,7 @@ const Companies = (props: any) => {
     <Box display={'flex'} height={'fit-content'} minHeight={'100vh'}>
       <ListComponent
         data={companiesData.data}
+        status={companiesData.status}
         elementGen={CompanyListItem}
         elementClick={{selectCompany, deleteCompany}}
         title={'List of companies'}

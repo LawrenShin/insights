@@ -59,11 +59,12 @@ const Content = (props: Props) => {
         </Box>
       </Box>
       <Box>
+        {/*TODO: display company properly*/}
         {Object.keys(data).map(key => <div key={uuidv4()}>
           <span className={styles.fieldName}>
             {key[0].toUpperCase()}{key.substr(1, key.length)}: &nbsp;
           </span>
-          <span>{data[key]}</span>
+          <span>{typeof data[key] !== 'object' && data[key]}</span>
         </div>)}
       </Box>
     </Box>

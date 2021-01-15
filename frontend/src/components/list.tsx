@@ -1,17 +1,16 @@
 import React from 'react';
-import { v4 as uuidv4} from 'uuid';
-import {
-  Box,
-  Typography,
-  List, Tooltip, Fab,
-} from '@material-ui/core';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {v4 as uuidv4} from 'uuid';
+import {Box, Fab, List, Tooltip, Typography,} from '@material-ui/core';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import {Add as AddIcon} from '@material-ui/icons';
 import {ListItemType, ListItemTypeGen} from '../components/ListItems/types';
+import {RequestStatus} from "./api/types";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 interface Props {
   data: ListItemType[];
+  status: RequestStatus;
   elementGen: ListItemTypeGen;
   elementClick: any;
   title: string;
@@ -38,6 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(0, 0, 0, 3),
       width: '36px',
       height: '36px',
+    },
+    centerLoader: {
+      display: 'flex',
+      justifyContent: 'center',
     }
   }),
 );
@@ -54,25 +57,34 @@ function generate(elementGen: ListItemTypeGen, data: ListItemType[], elementClic
 
 export default function ListComponent (props: Props) {
   const classes = useStyles();
-  const {title, data, elementGen, elementClick} = props;
+  const {title, data, elementGen, elementClick, status} = props;
 
   return (
     <Box className={classes.root}>
       <>
-        <Typography variant="h6" className={classes.title}>
-          {title}
-          <Tooltip title="Add" aria-label="add">
-            <Fab color="primary" className={classes.fab}>
-              <AddIcon fontSize={'small'} />
-            </Fab>
-          </Tooltip>
-        </Typography>
+        <>
+          <Typography variant="h6" className={classes.title}>
+            {title}
+            <Tooltip title="Add" aria-label="add">
+              <Fab color="primary" className={classes.fab}>
+                <AddIcon fontSize={'small'} />
+              </Fab>
+            </Tooltip>
+          </Typography>
+        </>
+        <div className={classes.demo}>
+          <List>
+            {
+              status === RequestStatus.LOADING ?
+              <div className={classes.centerLoader}>
+                <CircularProgress />
+              </div>
+                :
+              data && generate(elementGen, data, elementClick)
+            }
+          </List>
+        </div>
       </>
-      <div className={classes.demo}>
-        <List>
-          {data && generate(elementGen, data, elementClick)}
-        </List>
-      </div>
     </Box>
   );
 }

@@ -5,7 +5,7 @@ import {ListItemType} from "./types";
 import BusinessIcon from '@material-ui/icons/Business';
 
 const CompanyListItem = (company: ListItemType, handlers: any): JSX.Element => {
-  const companyNameList = Array.isArray(company?.CompanyNames) ? company?.CompanyNames[0] as any : '';
+  const companyNameList = Array.isArray(company?.otherNames) ? company?.otherNames[0] as any : '';
 
   return (
     <ListItem
@@ -18,7 +18,7 @@ const CompanyListItem = (company: ListItemType, handlers: any): JSX.Element => {
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={companyNameList?.Name}
+        primary={companyNameList?.name}
       />
       <ListItemSecondaryAction>
         <IconButton
