@@ -7,10 +7,11 @@ const getHeaders = () => ({
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Request-Headers': '*',
+  'x-api-token': localStorage.getItem('token') || '',
 });
 
 
-const post = <T extends {}>(uri: string, data: T) => fetch(uri, {
+const post = <T extends {}>(url: string, data: T) => fetch(`${host}/${url}`, {
   method: 'POST',
   mode: 'cors',
   headers: getHeaders(),
@@ -18,7 +19,7 @@ const post = <T extends {}>(uri: string, data: T) => fetch(uri, {
   body: JSON.stringify(data),
 });
 
-const get = (url: string) => fetch(`${host}/${url}`, {
+const get = (url: string, params?: string) => fetch(`${host}/${url}/${params ? '?'+params : ''}`, {
   method: 'GET',
   headers: getHeaders(),
   referrerPolicy: 'no-referrer',
@@ -26,12 +27,13 @@ const get = (url: string) => fetch(`${host}/${url}`, {
 
 
 export async function fetchToken(creds: Creds) {
-  const response = await post(`${host}/Prod/login`, creds);
+  const response = await post(`Prod/login`, creds);
   return await response.json();
 }
 
-export async function fetchCompanies(url: string) {
-  const response = await get(``);
+export async function fetchCompanies() {
+  // TODO: move params
+  const response = await get(`Prod/companies`, 'page_size=1&page_index=1');
 
   console.log(response, 'res');
 

@@ -2,6 +2,8 @@ import React from 'react';
 import {Box, Fab, Tooltip, Typography} from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {Edit as EditIcon} from "@material-ui/icons";
+import { v4 as uuidv4} from 'uuid';
+
 
 // TODO: move in separate file
 const useStyles = makeStyles(
@@ -49,7 +51,7 @@ const Content = (props: Props) => {
           </Typography>
         </Box>
         <Box>
-          <Tooltip title="Add" aria-label="add">
+          <Tooltip title="Edit" aria-label="Edit">
             <Fab color="primary" className={styles.fab}>
               <EditIcon fontSize={'small'} />
             </Fab>
@@ -57,7 +59,7 @@ const Content = (props: Props) => {
         </Box>
       </Box>
       <Box>
-        {Object.keys(data).map(key => <div>
+        {Object.keys(data).map(key => <div key={uuidv4()}>
           <span className={styles.fieldName}>
             {key[0].toUpperCase()}{key.substr(1, key.length)}: &nbsp;
           </span>

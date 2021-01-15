@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {
@@ -11,6 +11,8 @@ import ListComponent from '../components/list';
 import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
 import {Box} from "@material-ui/core";
+import {fetchCompanies} from "../components/api";
+import CompanyForm from "../components/forms/companyForm";
 
 
 const Companies = (props: any) => {
@@ -18,6 +20,11 @@ const Companies = (props: any) => {
     data: companiesList, selected: company,
     selectCompany, deleteCompany,
   } = props;
+
+  useEffect(() => {
+    // TODO: move to saga same as signIn. Here data only
+    fetchCompanies()
+  }, []);
 
   return (
     <Box display={'flex'} height={'fit-content'} minHeight={'100vh'}>
@@ -29,6 +36,7 @@ const Companies = (props: any) => {
         keyVal={'Company'}
       />
       {company && <Content title={'Company details'} data={company} />}
+      <CompanyForm />
     </Box>
   );
 }

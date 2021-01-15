@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Route, Redirect, useHistory} from 'react-router-dom';
 
@@ -15,11 +15,17 @@ interface OwnProps {
 
 interface Props extends State, OwnProps {};
 
-const isAuthRedirect = (isAuthenticated: boolean, Component: React.ElementType, props: any) => isAuthenticated ? (
+const isAuthRedirect = (
+  isAuthenticated: boolean,
+  Component: React.ElementType,
+  props: any
+) => (
+  isAuthenticated ? (
     <Component {...props} />
   ):(
     <Redirect to="/sign_in" />
   )
+);
 
 export const PrivateRoute = (
   {
@@ -28,22 +34,27 @@ export const PrivateRoute = (
     isPrivate,
     exact,
     path,
-  }: Props) => (
-  <Route
-    exact={exact}
-    path={path}
-    component={(props: any) => (
-      isPrivate ?
+  }: Props) => {
+  const history = useHistory();
+
+  useEffect(() => {
+    if (isAuthenticated) history.push('/companies');
+    if (!isAuthenticated) history.push('/sign_in');
+  }, [isAuthenticated]);
+
+  return(
+    <Route
+      exact={exact}
+      path={path}
+      component={(props: any) => (
+        isPrivate ?
           isAuthRedirect(isAuthenticated, Component, props)
-        :
-        path !== '/sign_in' ? <>
-          <Component {...props} />
-        </>
           :
-        <Redirect to="/companies" />
-    )}
-  />
-);
+          <Component {...props} />
+      )}
+    />
+  );
+}
 
 const mapStateToProps = (state: any) => ({
   isAuthenticated: !!state.SignInReducer.token,
