@@ -20,7 +20,7 @@ const post = <T extends {}>(url: string, data: T) => fetch(`${host}/${url}`, {
   body: JSON.stringify(data),
 });
 
-const get = (url: string, params?: string) => fetch(`${host}/${url}/${params ? '?'+params : ''}`, {
+export const get = (url: string, params?: string) => fetch(`${host}/${url}/${params ? '?'+params : ''}`, {
   method: 'GET',
   headers: getHeaders(),
   referrerPolicy: 'no-referrer',
@@ -35,6 +35,12 @@ export async function fetchToken(creds: Creds) {
 export async function fetchCompanies(params: string) {
   const response = await get(`companies`, params);
   return await response.json();
+}
+
+export async function fetchDicts() {
+  const response = await get(`dictionaries`);
+  const parsed = await response.json();
+  return parsed;
 }
 
 export async function fetchList(config: ListRequestConfig) {
