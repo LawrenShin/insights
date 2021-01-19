@@ -40,7 +40,6 @@ export const loadDictFail = (error: string) => CreateAction(DictActionTypes.DICT
 export function* workerSaga (action: DictActionType) {
   try {
     const dicts = yield call(fetchDicts);
-    console.log(dicts, 'saga');
     yield put(loadDictSuccess(dicts));
   } catch (error) {
     yield put(loadDictFail(error.message));

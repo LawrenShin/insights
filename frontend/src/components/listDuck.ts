@@ -88,7 +88,6 @@ const initState = {
 }
 // TODO: figure out how to make it reusable
 export function Reducer(state: StateType = initState, action: ListActionType) {
-
   const {type, payload} = action;
 
   if (type === ListActionTypes.LIST_LOAD) return {

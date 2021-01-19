@@ -9,6 +9,7 @@ import { v4 as uuidv4} from 'uuid';
 const useStyles = makeStyles(
   (theme: Theme) => createStyles({
     root: {
+      zIndex: 1,
       background: 'white',
       width: '80%',
       color: 'black',

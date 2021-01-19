@@ -15,13 +15,15 @@ interface Props {
   elementClick: any;
   title: string;
   keyVal: string;
+  pagination: () => JSX.Element;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      maxWidth: '20%',
+      width: 'fit-content',
+      maxWidth: '32%',
       backgroundColor: '#FFF',
       color: 'black',
       borderRight: '1px solid #CCC',
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2, 2, 0),
     },
     fab: {
-      margin: theme.spacing(0, 0, 0, 3),
+      float: 'right',
       width: '36px',
       height: '36px',
     },
@@ -47,9 +49,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function generate(elementGen: ListItemTypeGen, data: ListItemType[], elementClick: any) {
 
-  return data.map((value): React.ReactElement => {
+  return data.map((value, i): React.ReactElement => {
     return React.cloneElement(elementGen(value, elementClick), {
       key: uuidv4(),
+      style: {
+        marginBottom: i === data.length - 1 ? '40px' : 0,
+      },
     })
   });
 }
@@ -85,6 +90,7 @@ export default function ListComponent (props: Props) {
           </List>
         </div>
       </>
+      {props.pagination()}
     </Box>
   );
 }
