@@ -21,8 +21,10 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      maxHeight: '100vh',
+      overflow: 'scroll',
       flexGrow: 1,
-      width: 'fit-content',
+      width: '32%',
       maxWidth: '32%',
       backgroundColor: '#FFF',
       color: 'black',

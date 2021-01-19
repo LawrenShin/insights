@@ -9,9 +9,11 @@ import { v4 as uuidv4} from 'uuid';
 const useStyles = makeStyles(
   (theme: Theme) => createStyles({
     root: {
+      maxHeight: '100vh',
+      overflow: 'scroll',
       zIndex: 1,
       background: 'white',
-      width: '80%',
+      width: '68%',
       color: 'black',
       padding: theme.spacing(1, 2, 2,3),
     },
