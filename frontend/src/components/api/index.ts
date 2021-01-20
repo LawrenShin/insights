@@ -39,8 +39,11 @@ export async function fetchCompanies(params: string) {
 
 export async function fetchDicts() {
   const response = await get(`dictionaries`);
-  const parsed = await response.json();
-  return parsed;
+  return await response.json();
+}
+export async function fetchMeta() {
+  const response = await get(`metadata`);
+  return await response.json();
 }
 
 export async function fetchList(config: ListRequestConfig) {

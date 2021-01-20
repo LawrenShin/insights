@@ -23,3 +23,7 @@ export interface Dictionaries {
   religions: DictItem[];
   roleTypes: DictItem[];
 }
+
+export interface Meta {
+
+}

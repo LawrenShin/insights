@@ -12,7 +12,7 @@ import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
 import {Box} from "@material-ui/core";
 import CompanyForm from "../components/forms/companyForm";
-import {loadDicts} from "../components/api/dictsDuck";
+import {loadDicts, loadMeta} from "../components/api/dictsDuck";
 import {RequestStatus} from "../components/api/types";
 import TablePagination from '@material-ui/core/TablePagination';
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const Companies = (props: any) => {
   const {
     data: companiesData, selected: company,
-    dicts,
-    selectCompany, deleteCompany, loadList, loadDicts
+    meta, dicts, dictsMetaStatus, dictsMetaError,
+    selectCompany, deleteCompany, loadList, loadDicts, loadMeta
   } = props;
 
   const classes = useStyles();
@@ -76,8 +76,10 @@ const Companies = (props: any) => {
       url: 'companies',
       params: `page_size=${pageSize}&page_index=${page}`,
     });
-    if (dicts.data === null && dicts.status === RequestStatus.STILL)
-      loadDicts();
+    if (dictsMetaStatus === RequestStatus.STILL) {
+      if (dicts === null) loadDicts();
+      if (meta === null) loadMeta();
+    }
   }, []);
 
   return (
@@ -114,17 +116,28 @@ const mapStateToProps = (
       data,
       selected
     },
-    DictsReducer: dicts,
+    DictsReducer: {
+      data: {
+        dicts,
+        meta,
+      },
+      status: dictsMetaStatus,
+      error: dictsMetaError,
+    },
   }: RootState
 ) => ({
   data,
+  meta,
   dicts,
+  dictsMetaStatus,
+  dictsMetaError,
   selected,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   loadList: (config: ListRequestConfig) => dispatch(loadList(config)),
   loadDicts: () => dispatch(loadDicts()),
+  loadMeta: () => dispatch(loadMeta()),
 
   selectCompany: (id: string | number) => dispatch(listSelect(id)),
   deleteCompany: (id: string | number) => dispatch(listDelete(id)),
