@@ -76,7 +76,7 @@ export function* watcherSaga() {
   yield takeLatest(DictActionTypes.DICT_LOAD, workerSaga);
 }
 
-interface InitState {
+export interface DictsState {
   data: {
     dicts: Dictionaries | null;
     meta: Meta | null;
@@ -94,7 +94,7 @@ const initState = {
   error: null,
 }
 
-export function Reducer (state: InitState = initState, action: DictActionType | MetaActionType) {
+export function Reducer (state: DictsState = initState, action: DictActionType | MetaActionType): DictsState {
   const metaSuccess = action.type === MetaActionTypes.META_LOAD_SUCCESS;
   const dictSuccess = action.type === DictActionTypes.DICT_LOAD_SUCCESS;
 
@@ -110,8 +110,8 @@ export function Reducer (state: InitState = initState, action: DictActionType | 
     status: RequestStatus.STILL,
     data: {
       ...state.data,
-      dicts: dictSuccess ? action.payload : state.data.dicts,
-      meta: metaSuccess ? action.payload : state.data.meta,
+      dicts: dictSuccess ? action.payload as Dictionaries : state.data.dicts,
+      meta: metaSuccess ? action.payload as Meta : state.data.meta,
     },
   }
 

@@ -11,37 +11,11 @@ import ListComponent from '../components/list';
 import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
 import {Box} from "@material-ui/core";
-import CompanyForm from "../components/forms/companyForm";
+import CompanyForm from "../components/forms/anyForm";
 import {loadDicts, loadMeta} from "../components/api/dictsDuck";
 import {RequestStatus} from "../components/api/types";
 import TablePagination from '@material-ui/core/TablePagination';
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      position: 'fixed',
-      bottom: 0,
-      background: 'white',
-      width: '32%',
-      borderTop: '1px solid #AAA',
-      '& .MuiTablePagination-spacer': {
-        display: 'none',
-      },
-      '& .MuiTablePagination-selectRoot': {
-        marginRight: '5px',
-      },
-      '& .MuiTablePagination-actions': {
-        position: 'absolute',
-        right: 0,
-      },
-      '& .MuiTablePagination-actions > button': {
-        padding: 0,
-      }
-    },
-  }))
-
+import {companiesPageStyles} from './styles';
 
 const Companies = (props: any) => {
   const {
@@ -50,7 +24,7 @@ const Companies = (props: any) => {
     selectCompany, deleteCompany, loadList, loadDicts, loadMeta
   } = props;
 
-  const classes = useStyles();
+  const classes = companiesPageStyles();
   const [pageSize, setPageSize] = useState<number>(companiesData?.data?.pagination.pageSize | 10);
   const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 1);
 
@@ -91,15 +65,18 @@ const Companies = (props: any) => {
         elementClick={{selectCompany, deleteCompany}}
         title={'List of companies'}
         keyVal={'Company'}
-        pagination={() => companiesData?.data?.pagination && <TablePagination
-          className={classes.root}
-          component="div"
-          count={companiesData?.data?.pagination.pageCount * companiesData?.data?.pagination.pageSize}
-          page={page}
-          onChangePage={handleChangePage}
-          rowsPerPage={pageSize}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />}
+        pagination={
+          () => companiesData?.data?.pagination && <TablePagination
+            className={classes.root}
+            component="div"
+            count={companiesData?.data?.pagination.pageCount * companiesData?.data?.pagination.pageSize}
+            page={page}
+            onChangePage={handleChangePage}
+            rowsPerPage={pageSize}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+            rowsPerPageOptions={[10, 30, 50, 100, 200, 300]}
+          />
+        }
       />
 
       {company && <Content title={'Company details'} data={company} />}

@@ -40,9 +40,9 @@ export interface ListSelectType {
   payload: string | number;
 }
 
-export interface StateType {
+export interface ListStateType {
   data: Data;
-  selected: ListItemType | null;
+  selected: string | number | null;
 }
 export interface Data {
   data: ListItemType[] | null;
@@ -87,7 +87,7 @@ const initState = {
   selected: null,
 }
 // TODO: figure out how to make it reusable
-export function Reducer(state: StateType = initState, action: ListActionType) {
+export function Reducer(state: ListStateType = initState, action: ListActionType): ListStateType {
   const {type, payload} = action;
 
   if (type === ListActionTypes.LIST_LOAD) return {
@@ -101,7 +101,7 @@ export function Reducer(state: StateType = initState, action: ListActionType) {
     ...state,
     data: {
       ...state.data,
-      data: action.payload,
+      data: action.payload as ListItemType[],
       status: RequestStatus.STILL,
     }
   }
@@ -109,13 +109,13 @@ export function Reducer(state: StateType = initState, action: ListActionType) {
     ...state,
     data: {
       ...state.data,
-      error: action.payload,
+      error: action.payload as string,
       status: RequestStatus.FAIL,
     }
   }
 
     if (type === ListActionTypes.LIST_SELECT) {
-    return {...state, selected: payload}
+    return {...state, selected: payload as string | number}
   }
   if (type === ListActionTypes.LIST_DELETE) {
     return {

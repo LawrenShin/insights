@@ -24,6 +24,10 @@ export interface Dictionaries {
   roleTypes: DictItem[];
 }
 
+interface MetaEntity {
+  entityName: string;
+  propertyMetadata: any;
+}
 export interface Meta {
-
+  meta: MetaEntity[];
 }
