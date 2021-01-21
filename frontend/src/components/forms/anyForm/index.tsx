@@ -1,14 +1,16 @@
 import React from 'react';
-import initCompany from '../../../mocks/initCompany';
+import {MetaEntity} from "../../api/types";
 
-Object.entries(initCompany).forEach(
-  ([key, value]) => {
 
-  }
-);
+interface Props<I> {
+  entity: MetaEntity;
+  initialValues: I;
+}
 
 // TODO: should consist of 3 functions. 1 brings inits, 2 Validation schema, 3d form itself. This will be the bag for all
-const AnyForm = () => {
+const AnyForm = <I extends {}>({
+    initialValues
+  }: Props<I>) => {
 
   return (
     <>

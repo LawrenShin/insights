@@ -5,17 +5,17 @@ import {
   listDelete, ListRequestConfig,
   listSelect, loadList,
 } from '../components/listDuck';
-
 import Content from "../components/content";
 import ListComponent from '../components/list';
 import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
 import {Box} from "@material-ui/core";
-import CompanyForm from "../components/forms/anyForm";
+import CompanyForm from "../components/forms/companyForm";
 import {loadDicts, loadMeta} from "../components/api/dictsDuck";
 import {RequestStatus} from "../components/api/types";
 import TablePagination from '@material-ui/core/TablePagination';
 import {companiesPageStyles} from './styles';
+
 
 const Companies = (props: any) => {
   const {
@@ -81,7 +81,7 @@ const Companies = (props: any) => {
 
       {company && <Content title={'Company details'} data={company} />}
 
-      <CompanyForm />
+      {meta && <CompanyForm/>}
     </Box>
   );
 }
@@ -110,6 +110,7 @@ const mapStateToProps = (
   dictsMetaError,
   selected,
 });
+
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   loadList: (config: ListRequestConfig) => dispatch(loadList(config)),

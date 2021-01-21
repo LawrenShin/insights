@@ -24,10 +24,8 @@ export interface Dictionaries {
   roleTypes: DictItem[];
 }
 
-interface MetaEntity {
+export interface MetaEntity {
   entityName: string;
   propertyMetadata: any;
 }
-export interface Meta {
-  meta: MetaEntity[];
-}
+export type Meta = MetaEntity[];
