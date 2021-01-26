@@ -5,6 +5,7 @@ import {Meta} from "../api/types";
 import AnyForm from "./anyForm";
 import {valuesInitter} from "./anyForm/valuesInitter";
 import {schemaInitter} from "./anyForm/schemaInitter";
+import {metaFlatMap} from "./anyForm/metaFlatMap";
 import * as Yup from 'yup';
 
 interface Props {
@@ -15,12 +16,14 @@ const CompanyForm = ({meta}: Props) => {
   const entityCompany = meta?.company;
 
   const [initialValues, setInitialValues] = useState({});
-  const [companySchema, setCompanySchema] = useState(Yup.object({}));
+  const [companySchema, setCompanySchema] = useState({});
+  const [metaTypesMap, setMetaMap] = useState(new Map());
 
   useEffect(() => {
     if (entityCompany) {
       setInitialValues(valuesInitter(entityCompany, initialValues));
       setCompanySchema(schemaInitter(entityCompany, companySchema));
+      setMetaMap(metaFlatMap(entityCompany, metaTypesMap));
     }
   }, []);
 
@@ -31,8 +34,11 @@ const CompanyForm = ({meta}: Props) => {
           <AnyForm
             title={'Company form'}
             entity={entityCompany}
+
             initialValues={initialValues}
-            schema={companySchema}
+            schema={Yup.object(companySchema)}
+            metaTypesMap={metaTypesMap}
+
             handleSubmit={(values: any) => console.log(values)}
           />
         :

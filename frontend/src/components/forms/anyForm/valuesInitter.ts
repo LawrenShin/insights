@@ -1,10 +1,12 @@
 
 export enum MetaFieldTypes {
-  Array = 'Array',
-  Boolean = 'Boolean',
-  Percentage = 'Percentage',
-  Integer = 'Integer',
-  String = 'String',
+  Array = 'array',
+  Boolean = 'boolean',
+  Percentage = 'percentage',
+  Integer = 'integer',
+  String = 'string',
+  Float = 'float',
+  NestedEntity = 'NestedEntity',
 }
 
 // TODO: company? for future "edit" fuctionality
@@ -34,8 +36,8 @@ export const valuesInitter = <T extends {}>(meta: any, initValues: T, existingVa
       allowsNull,
     } = meta[key];
 
-    if (fieldType !== 'NestedEntity') {
-      initValues = {...initValues, [key]: metaFieldTypesSwitcher(fieldType, allowsNull)};
+    if (fieldType !== MetaFieldTypes.NestedEntity) {
+      initValues = {...initValues, [key]: metaFieldTypesSwitcher(fieldType.toLowerCase(), allowsNull)};
     } else {
       initValues = {...initValues, ...valuesInitter(meta[key].meta, {})};
     }

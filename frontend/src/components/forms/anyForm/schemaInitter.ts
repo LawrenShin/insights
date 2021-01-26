@@ -1,9 +1,10 @@
 import * as Yup from 'yup';
+import {MetaFieldTypes} from "./valuesInitter";
 
 
-const typeRenaming = (type: string): string => {
-  if (type === 'percentage' || type === 'float') return 'string';
-  if (type === 'integer') return 'number';
+export const typeRenaming = (type: string): string => {
+  if (type === MetaFieldTypes.Percentage || type === MetaFieldTypes.Float) return 'string';
+  if (type === MetaFieldTypes.Integer) return 'number';
   return type;
 }
 // TODO: may be needed if it gets more complicated
@@ -14,14 +15,19 @@ const typeRenaming = (type: string): string => {
 //   return Yup.string();
 // }
 
-export const schemaInitter = <T extends {}>(meta: any, initSchema: T, existingSchema?: any): T => {
+export const schemaInitter = (
+  meta: any,
+  initSchema: {[key: string]: any},
+  existingSchema?: any
+): {[key: string]: any} => {
+
   Object.keys(meta).forEach((key, i) => {
     const {
       fieldType,
       allowsNull,
     } = meta[key];
 
-    if (fieldType !== 'NestedEntity') {
+    if (fieldType !== MetaFieldTypes.NestedEntity) {
       const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase());
       initSchema = {
         ...initSchema,
@@ -30,10 +36,10 @@ export const schemaInitter = <T extends {}>(meta: any, initSchema: T, existingSc
         [key]: allowsNull ? Yup[fieldTypeRenamed]() : Yup[fieldTypeRenamed]().required(),
       };
     } else {
-        initSchema = {
-          ...initSchema,
-          ...schemaInitter(meta[key].meta, {})
-        };
+      initSchema = {
+        ...initSchema,
+        ...schemaInitter(meta[key].meta, {}),
+      };
     }
   })
 
