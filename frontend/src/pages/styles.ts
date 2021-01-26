@@ -23,4 +23,9 @@ export const companiesPageStyles = makeStyles((theme: Theme) =>
         padding: 0,
       }
     },
+    fab: {
+      float: 'right',
+      width: '36px',
+      height: '36px',
+    },
   }))

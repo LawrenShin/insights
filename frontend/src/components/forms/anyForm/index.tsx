@@ -2,7 +2,9 @@ import React from 'react';
 import {Form, Formik} from "formik";
 import * as Yup from 'yup';
 import * as Fields from '../../fields';
+import useStyles from './styles';
 import {MetaFieldTypes} from "./valuesInitter";
+import {MetaMapType} from "./metaFlatMap";
 
 
 export interface InitialValuesType {
@@ -14,27 +16,53 @@ interface Props {
   entity: any;
   initialValues: InitialValuesType;
   schema: Yup.ObjectSchema<any>;
-  metaTypesMap: Map<string, string>;
+  metaTypesMap: MetaMapType;
   handleSubmit: (values: InitialValuesType) => void;
 }
+
 // TODO: create fields on fly
 // number | string - input
 // boolean - checkbox
 // array select, but also needs dictionary for this
-const renderField = (key: string, val: any, metaTypesMap: Map<string, string>, entity: any): JSX.Element => {
-  // console.log(key, val, metaTypesMap.get(key), 'renderField');
+const renderField = (
+  key: string,
+  val: any,
+  metaTypesMap: MetaMapType,
+  entity: any,
+  classes?: any
+): JSX.Element => {
   if (key !== 'id') {
-    if (metaTypesMap.get(key) === 'number') {
-      console.log()
+    if (metaTypesMap.get(key)?.type === MetaFieldTypes.Number) {
       return <Fields.Input
-        label={key}
+        className={classes ? classes.input : null}
+        label={metaTypesMap.get(key)?.displayName}
         name={key}
         type={'number'}
-        // value={val}
       />
     }
+
+    if (metaTypesMap.get(key)?.type === MetaFieldTypes.Boolean) {
+      return <Fields.Checkbox
+        className={classes ? classes.checkbox : null}
+        name={key}
+        type={'checkbox'}
+      >
+        <label htmlFor={key} className={classes.checkBoxLabel}>{metaTypesMap.get(key)?.displayName}</label>
+      </Fields.Checkbox>
+    }
+
+    if (metaTypesMap.get(key)?.type === MetaFieldTypes.String) {
+      return <Fields.Input
+        className={classes ? classes.input : null}
+        label={metaTypesMap.get(key)?.displayName}
+        name={key}
+        type={'text'}
+      />
+    }
+
     return <></>;
   }
+
   return <></>;
 }
 
@@ -47,22 +75,29 @@ const AnyForm = ({
   handleSubmit,
   initialValues,
 }: Props) => {
+  const classes = useStyles();
 
   return (
-    <>
-      <h1>{title}</h1>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={values => handleSubmit(values)}
-        validationSchema={schema}
-      >
-        <Form>
-          {Object.keys(initialValues).map(
-            (key) => renderField(key, initialValues[key], metaTypesMap, entity)
-          )}
-        </Form>
-      </Formik>
-    </>
+    <div className={classes.root}>
+      <div>
+        <h1 className={classes.title}>{title}</h1>
+      </div>
+      <div>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={values => handleSubmit(values)}
+          validationSchema={schema}
+        >
+          <Form>
+            {
+              Object.keys(initialValues).map(
+                (key) => renderField(key, initialValues[key], metaTypesMap, entity, classes)
+              )
+            }
+          </Form>
+        </Formik>
+      </div>
+    </div>
   );
 }
 

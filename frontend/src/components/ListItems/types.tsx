@@ -1,8 +1,13 @@
 import React from "react";
 
+export type ListOfNames = {
+  name: string;
+  nameType: string;
+}[];
 
 export interface ListItemType {
   [key: string]: string | number | null | string[] | number[] | boolean | {};
+  names: ListOfNames;
 }
 
 // TODO: specify actual company type

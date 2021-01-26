@@ -4,6 +4,7 @@ export enum MetaFieldTypes {
   Boolean = 'boolean',
   Percentage = 'percentage',
   Integer = 'integer',
+  Number = 'number',
   String = 'string',
   Float = 'float',
   NestedEntity = 'NestedEntity',

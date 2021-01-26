@@ -9,12 +9,13 @@ import Content from "../components/content";
 import ListComponent from '../components/list';
 import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
-import {Box} from "@material-ui/core";
+import {Box, Collapse, Fab, Tooltip} from "@material-ui/core";
 import CompanyForm from "../components/forms/companyForm";
 import {loadDicts, loadMeta} from "../components/api/dictsDuck";
 import {RequestStatus} from "../components/api/types";
 import TablePagination from '@material-ui/core/TablePagination';
 import {companiesPageStyles} from './styles';
+import {Add as AddIcon} from "@material-ui/icons";
 
 
 const Companies = (props: any) => {
@@ -25,6 +26,7 @@ const Companies = (props: any) => {
   } = props;
 
   const classes = companiesPageStyles();
+  const [showForm, setShowForm] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(companiesData?.data?.pagination.pageSize | 10);
   const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 1);
 
@@ -65,6 +67,12 @@ const Companies = (props: any) => {
         elementClick={{selectCompany, deleteCompany}}
         title={'List of companies'}
         keyVal={'Company'}
+        callForm={() => <Tooltip title="Add" aria-label="add" onClick={() => setShowForm(!showForm)}>
+            <Fab color="primary" className={classes.fab}>
+              <AddIcon fontSize={'small'} />
+            </Fab>
+          </Tooltip>
+        }
         pagination={
           () => companiesData?.data?.pagination && <TablePagination
             className={classes.root}
@@ -81,7 +89,9 @@ const Companies = (props: any) => {
 
       {company && <Content title={'Company details'} data={company} />}
 
-      {meta && <CompanyForm/>}
+      {meta && <Collapse in={showForm}>
+        <CompanyForm />
+      </Collapse>}
     </Box>
   );
 }

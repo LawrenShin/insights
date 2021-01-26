@@ -20,14 +20,14 @@ export const Input: React.FC<InputProps> = ({ label, ...props }) => {
   );
 };
 
-export const MyCheckbox: React.FC<InputProps> = ({ children, ...props }) => {
+export const Checkbox: React.FC<InputProps> = ({ children, ...props }) => {
   const [field, meta] = useField({ ...props, type: 'checkbox' });
   return (
     <div>
-      <label className={props.className}>
+      <div className={props.className}>
         <input type="checkbox" {...field} {...props} />
         {children}
-      </label>
+      </div>
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
@@ -35,7 +35,7 @@ export const MyCheckbox: React.FC<InputProps> = ({ children, ...props }) => {
   );
 };
 
-export const MySelect: React.FC<InputProps> = ({ label, ...props }) => {
+export const Select: React.FC<InputProps> = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <div>
