@@ -1,4 +1,3 @@
-import {MetaEntity} from "../../api/types";
 
 export enum MetaFieldTypes {
   Array = 'Array',
@@ -12,7 +11,7 @@ export enum MetaFieldTypes {
 const metaFieldTypesSwitcher = (
   fieldType: MetaFieldTypes,
   allowsNull: boolean | undefined,
-  company?: any
+  existingValues?: any
 ) => {
   if (allowsNull) return null;
 
@@ -24,25 +23,22 @@ const metaFieldTypesSwitcher = (
 }
 
 // TODO: company? for future "edit" fuctionality
-export const valuesInitter = <T extends {}>(meta: MetaEntity, initValues: T, company?: any): T => {
-  meta.propertyMetadata.map((propDescription: any) => {
+// meta - metadata of an entity
+// initValues - empty object
+// existing values - vals of a company on edit mode
+export const valuesInitter = <T extends {}>(meta: any, initValues: T, existingValues?: any): T => {
+
+  Object.keys(meta).forEach((key, index) => {
     const {
-      propertyName,
-      isEditable,
       fieldType,
       allowsNull,
-    } = propDescription;
+    } = meta[key];
 
-    Object.defineProperty(
-      initValues,
-      propertyName,
-      {
-        enumerable: true,
-        configurable: isEditable,
-        writable: false,
-        value: metaFieldTypesSwitcher(fieldType, allowsNull),
-      }
-    );
-  });
+    if (fieldType !== 'NestedEntity') {
+      initValues = {...initValues, [key]: metaFieldTypesSwitcher(fieldType, allowsNull)};
+    } else {
+      initValues = {...initValues, ...valuesInitter(meta[key].meta, {})};
+    }
+  })
   return initValues;
 }
