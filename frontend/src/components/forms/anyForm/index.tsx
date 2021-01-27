@@ -62,6 +62,17 @@ const renderField = (
       />
     }
 
+    if (metaTypesMap.get(key)?.type === MetaFieldTypes.Percentage) {
+      return <Fields.Input
+        className={classes ? classes.input : null}
+        label={metaTypesMap.get(key)?.displayName}
+        name={key}
+        type={'number'}
+        max={100}
+        min={0}
+      />
+    }
+
     // if (metaTypesMap.get(key)?.type === MetaFieldTypes.Array) {
     //   return <Fields.Select
     //     className={classes.input}

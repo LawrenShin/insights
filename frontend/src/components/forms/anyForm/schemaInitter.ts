@@ -1,8 +1,9 @@
 import * as Yup from 'yup';
 import {MetaFieldTypes} from "./valuesInitter";
 
-export const typeRenaming = (type: string): string => {
-  if (type === MetaFieldTypes.Percentage || type === MetaFieldTypes.Float) return 'string';
+export const typeRenaming = (type: string, mode?: boolean): string => {
+  if (type === MetaFieldTypes.Percentage) return mode ? type : 'string';
+  if (type === MetaFieldTypes.Float) return 'string';
   if (type === MetaFieldTypes.Integer) return 'number';
   return type;
 }
@@ -33,13 +34,25 @@ export const schemaInitter = (
     } = meta[key];
     if (key !== 'id') {
       if (fieldType !== MetaFieldTypes.NestedEntity) {
-        const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase());
+
+        const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase(), true);
+        console.log(fieldTypeRenamed)
+
+        // TODO: not an elegant solution with Percentage type
+        // @ts-ignore
+        let fieldSchemaType = Yup[fieldTypeRenamed === MetaFieldTypes.Percentage ? 'number' : fieldTypeRenamed]();
+        // is required check
+        fieldSchemaType = (allowsNull || fieldTypeRenamed === MetaFieldTypes.Array) ?
+          // TODO: replace this workaround with ts solution.
+          // @ts-ignore
+          fieldSchemaType.nullable() : fieldSchemaType.required();
+        // is percentage check
+        if (fieldTypeRenamed === MetaFieldTypes.Percentage) {
+          fieldSchemaType = fieldSchemaType.min(0, 'At least 0').max(100, 'At max 100');
+        }
         initSchema = {
           ...initSchema,
-          [key]: (allowsNull || fieldTypeRenamed === MetaFieldTypes.Array) ?
-            // TODO: replace this workaround with ts solution.
-            // @ts-ignore
-            Yup[fieldTypeRenamed]().nullable() : Yup[fieldTypeRenamed]().required(),
+          [key]: fieldSchemaType,
         };
       } else {
         initSchema = {

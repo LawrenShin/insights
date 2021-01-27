@@ -5,6 +5,8 @@ interface InputProps extends FieldConfig {
   label?: string;
   id?: string;
   className?: string;
+  max?: string | number;
+  min?: string | number;
 }
 
 export const Input: React.FC<InputProps> = ({ label, ...props }) => {
