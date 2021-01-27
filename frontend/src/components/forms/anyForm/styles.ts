@@ -5,7 +5,7 @@ export default makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       flexDirection: 'column',
-      padding: theme.spacing(0, 0, 0, 10),
+      padding: theme.spacing(0, 0, 0, 8),
       background: '#1a202c',
       overflow: 'scroll',
       maxHeight: '100vh',
@@ -13,9 +13,21 @@ export default makeStyles((theme: Theme) =>
       position: 'fixed',
       right: '0%',
       zIndex: 200,
+      color: '#FFF',
+    },
+    subEntity: {
+      marginLeft: '20px',
     },
     title: {
       marginTop: '.5em',
+    },
+    borderBottom: {
+      borderBottom: '1px solid',
+    },
+    buttonsContainer: {
+      display: 'flex',
+      justifyContent: 'right',
+      gap: '2em',
     },
     input: {
       padding: '5px !important',

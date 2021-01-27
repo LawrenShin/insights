@@ -8,6 +8,7 @@ export enum MetaFieldTypes {
   String = 'string',
   Float = 'float',
   NestedEntity = 'NestedEntity',
+  DropDown = 'DropDown',
 }
 
 // TODO: company? for future "edit" fuctionality

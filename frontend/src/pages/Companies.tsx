@@ -67,7 +67,7 @@ const Companies = (props: any) => {
         elementClick={{selectCompany, deleteCompany}}
         title={'List of companies'}
         keyVal={'Company'}
-        callForm={() => <Tooltip title="Add" aria-label="add" onClick={() => setShowForm(!showForm)}>
+        callForm={() => meta && <Tooltip title="Add" aria-label="add" onClick={() => setShowForm(!showForm)}>
             <Fab color="primary" className={classes.fab}>
               <AddIcon fontSize={'small'} />
             </Fab>

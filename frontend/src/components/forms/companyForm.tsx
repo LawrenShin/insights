@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {RootState} from "../../store/rootReducer";
-import {Meta} from "../api/types";
+import {Dictionaries, Meta} from "../api/types";
 import AnyForm from "./anyForm";
 import {valuesInitter} from "./anyForm/valuesInitter";
 import {schemaInitter} from "./anyForm/schemaInitter";
@@ -9,10 +9,11 @@ import {metaFlatMap} from "./anyForm/metaFlatMap";
 import * as Yup from 'yup';
 
 interface Props {
+  dicts: Dictionaries | null;
   meta: Meta | null;
 }
 
-const CompanyForm = ({meta}: Props) => {
+const CompanyForm = ({meta, dicts}: Props) => {
   const entityCompany = meta?.company;
 
   const [initialValues, setInitialValues] = useState({});
@@ -30,16 +31,17 @@ const CompanyForm = ({meta}: Props) => {
   return (
     <>
       {
-        entityCompany ?
+        (entityCompany && dicts) ?
           <AnyForm
             title={'Company form'}
             entity={entityCompany}
+            dicts={dicts}
 
             initialValues={initialValues}
             schema={Yup.object(companySchema)}
             metaTypesMap={metaTypesMap}
 
-            handleSubmit={(values: any) => console.log(values)}
+            handleSubmit={(values: any) => console.log(values, 'submit!')}
           />
         :
           <span>No entity were found</span>

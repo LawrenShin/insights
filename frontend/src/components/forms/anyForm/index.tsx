@@ -5,6 +5,7 @@ import * as Fields from '../../fields';
 import useStyles from './styles';
 import {MetaFieldTypes} from "./valuesInitter";
 import {MetaMapType} from "./metaFlatMap";
+import {Country, Dictionaries, DictItem} from "../../api/types";
 
 
 export interface InitialValuesType {
@@ -14,6 +15,7 @@ export interface InitialValuesType {
 interface Props {
   title: string;
   entity: any;
+  dicts: Dictionaries;
   initialValues: InitialValuesType;
   schema: Yup.ObjectSchema<any>;
   metaTypesMap: MetaMapType;
@@ -28,7 +30,7 @@ const renderField = (
   key: string,
   val: any,
   metaTypesMap: MetaMapType,
-  entity: any,
+  dicts: Dictionaries,
   classes?: any
 ): JSX.Element => {
   if (key !== 'id') {
@@ -60,6 +62,19 @@ const renderField = (
       />
     }
 
+    // if (metaTypesMap.get(key)?.type === MetaFieldTypes.Array) {
+    //   return <Fields.Select
+    //     className={classes.input}
+    //     label={metaTypesMap.get(key)?.displayName}
+    //     name={key}
+    //   >
+    //     {
+    //       // @ts-ignore
+    //       dicts[key]?.map((option: Country | DictItem) => <option value={option.id}>{option.name}</option>)
+    //     }
+    //   </Fields.Select>
+    // }
+
     return <></>;
   }
 
@@ -70,30 +85,52 @@ const renderField = (
 const AnyForm = ({
   title,
   entity,
+  dicts,
   schema,
   metaTypesMap,
   handleSubmit,
   initialValues,
 }: Props) => {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
-      <div>
+      <div className={classes.borderBottom}>
         <h1 className={classes.title}>{title}</h1>
       </div>
       <div>
         <Formik
           initialValues={initialValues}
-          onSubmit={values => handleSubmit(values)}
+          onSubmit={values => {
+            console.log(values, 'anyform')
+            handleSubmit(values)
+          }}
           validationSchema={schema}
         >
           <Form>
             {
-              Object.keys(initialValues).map(
-                (key) => renderField(key, initialValues[key], metaTypesMap, entity, classes)
-              )
+              Object.keys(entity).map((key) => {
+                if (entity[key].fieldType !== MetaFieldTypes.NestedEntity) {
+                  return renderField(key, initialValues[key], metaTypesMap, dicts, classes);
+                }
+
+                return <>
+                  <h4>{entity[key].displayName}</h4>
+                  <div className={classes.subEntity}>
+                    {
+                      Object.keys(entity[key].meta).map(
+                        (key) => renderField(key, initialValues[key], metaTypesMap, dicts, classes)
+                      )
+                    }
+                  </div>
+                </>
+              })
+
             }
+            {/*<Fields.Input name={'name'} label={'name'} type={'text'}></Fields.Input>*/}
+            <div className={classes.buttonsContainer}>
+              <button type="reset">Cancel</button>
+              <button type="submit">Submit</button>
+            </div>
           </Form>
         </Formik>
       </div>

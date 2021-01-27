@@ -5,7 +5,7 @@ import {ListItemType} from "./types";
 import BusinessIcon from '@material-ui/icons/Business';
 
 const CompanyListItem = (company: ListItemType, handlers: any): JSX.Element => {
-  const companyName = Array.isArray(company?.names) ? company.names[0].name : '';
+  const companyName = Array.isArray(company?.names) ? company.names[0]?.name : '';
 
   return (
     <ListItem

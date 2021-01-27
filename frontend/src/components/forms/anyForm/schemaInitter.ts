@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 import {MetaFieldTypes} from "./valuesInitter";
 
-
 export const typeRenaming = (type: string): string => {
   if (type === MetaFieldTypes.Percentage || type === MetaFieldTypes.Float) return 'string';
   if (type === MetaFieldTypes.Integer) return 'number';
@@ -15,6 +14,12 @@ export const typeRenaming = (type: string): string => {
 //   return Yup.string();
 // }
 
+
+// TODO:NOTES:
+// Array fields goes in separate forms. So here they be treated like NOT required, provided empty arrays.
+// NestedEntity means there's subset of fields that should be rendered in this form.
+// id key doesn't participate in form.
+//
 export const schemaInitter = (
   meta: any,
   initSchema: {[key: string]: any},
@@ -26,20 +31,22 @@ export const schemaInitter = (
       fieldType,
       allowsNull,
     } = meta[key];
-
-    if (fieldType !== MetaFieldTypes.NestedEntity) {
-      const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase());
-      initSchema = {
-        ...initSchema,
-        // TODO: replace this workaround with ts solution.
-        // @ts-ignore
-        [key]: allowsNull ? Yup[fieldTypeRenamed]() : Yup[fieldTypeRenamed]().required(),
-      };
-    } else {
-      initSchema = {
-        ...initSchema,
-        ...schemaInitter(meta[key].meta, {}),
-      };
+    if (key !== 'id') {
+      if (fieldType !== MetaFieldTypes.NestedEntity) {
+        const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase());
+        initSchema = {
+          ...initSchema,
+          [key]: (allowsNull || fieldTypeRenamed === MetaFieldTypes.Array) ?
+            // TODO: replace this workaround with ts solution.
+            // @ts-ignore
+            Yup[fieldTypeRenamed]().nullable() : Yup[fieldTypeRenamed]().required(),
+        };
+      } else {
+        initSchema = {
+          ...initSchema,
+          ...schemaInitter(meta[key].meta, {}),
+        };
+      }
     }
   })
 

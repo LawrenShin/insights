@@ -13,7 +13,7 @@ export const Input: React.FC<InputProps> = ({ label, ...props }) => {
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
       <input className={props.className} {...field} {...props} />
-      {meta.touched && meta.error ? (
+      {meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
     </>
@@ -28,7 +28,7 @@ export const Checkbox: React.FC<InputProps> = ({ children, ...props }) => {
         <input type="checkbox" {...field} {...props} />
         {children}
       </div>
-      {meta.touched && meta.error ? (
+      {meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
     </div>
@@ -40,8 +40,11 @@ export const Select: React.FC<InputProps> = ({ label, ...props }) => {
   return (
     <div>
       <label htmlFor={props.id || props.name}>{label}</label>
-      <select {...field} {...props} />
-      {meta.touched && meta.error ? (
+      <select {...field} {...props}>
+        <option value={undefined}>Empty</option>
+        {props.children}
+      </select>
+      {meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}
     </div>
