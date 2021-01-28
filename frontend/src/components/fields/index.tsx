@@ -9,12 +9,26 @@ interface InputProps extends FieldConfig {
   min?: string | number;
 }
 
+const preventSymbols = (evt: React.KeyboardEvent) => {
+  if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
+  {
+    evt.preventDefault();
+  }
+}
+
 export const Input: React.FC<InputProps> = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
-      <input className={props.className} {...field} {...props} />
+      <input
+        {...field}
+        {...props}
+        onKeyDown={(evt) => {
+          if (props.type === 'number') preventSymbols(evt);
+        }}
+        className={props.className}
+      />
       {meta.error ? (
         <div className="error">{meta.error}</div>
       ) : null}

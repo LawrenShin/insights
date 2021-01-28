@@ -36,7 +36,6 @@ export const schemaInitter = (
       if (fieldType !== MetaFieldTypes.NestedEntity) {
 
         const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase(), true);
-        console.log(fieldTypeRenamed)
 
         // TODO: not an elegant solution with Percentage type
         // @ts-ignore
@@ -50,6 +49,7 @@ export const schemaInitter = (
         if (fieldTypeRenamed === MetaFieldTypes.Percentage) {
           fieldSchemaType = fieldSchemaType.min(0, 'At least 0').max(100, 'At max 100');
         }
+
         initSchema = {
           ...initSchema,
           [key]: fieldSchemaType,

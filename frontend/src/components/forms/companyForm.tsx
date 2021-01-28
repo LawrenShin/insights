@@ -3,14 +3,30 @@ import {connect} from "react-redux";
 import {RootState} from "../../store/rootReducer";
 import {Dictionaries, Meta} from "../api/types";
 import AnyForm from "./anyForm";
-import {valuesInitter} from "./anyForm/valuesInitter";
-import {schemaInitter} from "./anyForm/schemaInitter";
-import {metaFlatMap} from "./anyForm/metaFlatMap";
+import {MetaFieldTypes, valuesInitter} from "./anyForm/helpers/valuesInitter";
+import {schemaInitter} from "./anyForm/helpers/schemaInitter";
+import {metaFlatMap} from "./anyForm/helpers/metaFlatMap";
 import * as Yup from 'yup';
 
 interface Props {
   dicts: Dictionaries | null;
   meta: Meta | null;
+}
+// TODO:NOTES: rly unnecessary and ugly. Cas formik sometimes doesn't pass full initialsValues here.
+const handleSubmit = (values: any, meta: any, dispatcher?: any) => {
+  let filledMetaCopy = {};
+  Object.keys(meta).forEach((key, index) => {
+    const {
+      fieldType,
+    } = meta[key];
+
+      if (fieldType !== MetaFieldTypes.NestedEntity) {
+        filledMetaCopy = {...filledMetaCopy, [key]: values[key]};
+      } else {
+        filledMetaCopy = {...filledMetaCopy, [key]: {...handleSubmit(values, meta[key].meta)}};
+      }
+  })
+  return filledMetaCopy;
 }
 
 const CompanyForm = ({meta, dicts}: Props) => {
@@ -41,7 +57,7 @@ const CompanyForm = ({meta, dicts}: Props) => {
             schema={Yup.object(companySchema)}
             metaTypesMap={metaTypesMap}
 
-            handleSubmit={(values: any) => console.log(values, 'submit!')}
+            handleSubmit={(values: any) => handleSubmit(values, entityCompany)}
           />
         :
           <span>No entity were found</span>
