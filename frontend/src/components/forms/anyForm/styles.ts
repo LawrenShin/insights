@@ -37,6 +37,18 @@ export default makeStyles((theme: Theme) =>
     },
     checkBoxLabel: {
       marginTop: 0
-    }
+    },
+    closeIconContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+    },
+    closeIcon: {
+      margin: theme.spacing(0, '20px', 0, 0),
+      '&:hover': {
+        cursor: 'pointer',
+        color: 'red',
+      }
+    },
   }),
 );

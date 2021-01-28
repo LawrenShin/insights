@@ -1,21 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
-import {
-  listDelete, ListRequestConfig,
-  listSelect, loadList,
-} from '../components/listDuck';
+import {listDelete, ListRequestConfig, listSelect, loadList,} from '../components/listDuck';
 import Content from "../components/content";
 import ListComponent from '../components/list';
 import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
-import {Box, Collapse, Fab, Tooltip} from "@material-ui/core";
+import {Box, Fab, Tooltip} from "@material-ui/core";
 import CompanyForm from "../components/forms/companyForm";
 import {loadDicts, loadMeta} from "../components/api/dictsDuck";
 import {RequestStatus} from "../components/api/types";
 import TablePagination from '@material-ui/core/TablePagination';
 import {companiesPageStyles} from './styles';
-import {Add as AddIcon} from "@material-ui/icons";
+import {Add as AddIcon, Edit as EditIcon} from "@material-ui/icons";
+import {FormModes} from "../components/forms/types";
 
 
 const Companies = (props: any) => {
@@ -26,7 +24,7 @@ const Companies = (props: any) => {
   } = props;
 
   const classes = companiesPageStyles();
-  const [showForm, setShowForm] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState<FormModes>(FormModes.HIDDEN);
   const [pageSize, setPageSize] = useState<number>(companiesData?.data?.pagination.pageSize | 10);
   const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 1);
 
@@ -67,7 +65,12 @@ const Companies = (props: any) => {
         elementClick={{selectCompany, deleteCompany}}
         title={'List of companies'}
         keyVal={'Company'}
-        callForm={() => meta && <Tooltip title="Add" aria-label="add" onClick={() => setShowForm(!showForm)}>
+        callForm={() => meta && <Tooltip
+          title="Add"
+          aria-label="add"
+          onClick={() => setShowForm(
+            showForm === FormModes.HIDDEN ? FormModes.ADD : FormModes.HIDDEN
+          )}>
             <Fab color="primary" className={classes.fab}>
               <AddIcon fontSize={'small'} />
             </Fab>
@@ -87,11 +90,29 @@ const Companies = (props: any) => {
         }
       />
 
-      {company && <Content title={'Company details'} data={company} />}
+      {company && <Content
+        title={'Company details'}
+        data={company}
+        // TODO: tooltips might be extracted to separate function.
+        callForm={() => <Tooltip
+          title="Edit"
+          aria-label="Edit"
+          onClick={() => setShowForm(
+            showForm === FormModes.HIDDEN ? FormModes.EDIT : FormModes.HIDDEN
+          )}
+        >
+          <Fab color="primary" className={classes.fab}>
+            <EditIcon fontSize={'small'} />
+          </Fab>
+        </Tooltip>}
+      />}
 
-      {meta && <Collapse in={showForm}>
-        <CompanyForm />
-      </Collapse>}
+      {(meta && showForm !== FormModes.HIDDEN) && <CompanyForm
+        handleClose={() => setShowForm(FormModes.HIDDEN)}
+        selectedCompany={
+          showForm === FormModes.EDIT ? company : null
+        }
+      />}
     </Box>
   );
 }

@@ -39,7 +39,8 @@ export const valuesInitter = <T extends {}>(meta: any, initValues: T, existingVa
     } = meta[key];
 
     if (fieldType !== MetaFieldTypes.NestedEntity) {
-      initValues = {...initValues, [key]: metaFieldTypesSwitcher(fieldType.toLowerCase(), allowsNull)};
+      initValues = {...initValues, [key]: (existingValues && existingValues[key]) ?
+          existingValues[key] : metaFieldTypesSwitcher(fieldType.toLowerCase(), allowsNull)};
     } else {
       initValues = {...initValues, ...valuesInitter(meta[key].meta, {})};
     }

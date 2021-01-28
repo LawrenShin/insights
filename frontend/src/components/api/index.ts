@@ -32,6 +32,11 @@ export async function fetchToken(creds: Creds) {
   return await response.json();
 }
 
+export async function createCompany(company: any) {
+  const response = await post('companies', company);
+  return await response.json();
+}
+
 export async function fetchCompanies(params: string) {
   const response = await get(`companies`, params);
   return await response.json();

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {connect} from "react-redux";
 import {RootState} from "../../store/rootReducer";
 import {Dictionaries, Meta} from "../api/types";
@@ -7,8 +7,14 @@ import {MetaFieldTypes, valuesInitter} from "./anyForm/helpers/valuesInitter";
 import {schemaInitter} from "./anyForm/helpers/schemaInitter";
 import {metaFlatMap} from "./anyForm/helpers/metaFlatMap";
 import * as Yup from 'yup';
+import {createCompany} from "../api";
 
-interface Props {
+interface OwnProps {
+  selectedCompany: any;
+  handleClose: () => void;
+}
+
+interface Props extends OwnProps{
   dicts: Dictionaries | null;
   meta: Meta | null;
 }
@@ -29,7 +35,7 @@ const handleSubmit = (values: any, meta: any, dispatcher?: any) => {
   return filledMetaCopy;
 }
 
-const CompanyForm = ({meta, dicts}: Props) => {
+const CompanyForm = ({meta, dicts, selectedCompany, handleClose}: Props) => {
   const entityCompany = meta?.company;
 
   const [initialValues, setInitialValues] = useState({});
@@ -38,7 +44,7 @@ const CompanyForm = ({meta, dicts}: Props) => {
 
   useEffect(() => {
     if (entityCompany) {
-      setInitialValues(valuesInitter(entityCompany, initialValues));
+      setInitialValues(valuesInitter(entityCompany, initialValues, selectedCompany));
       setCompanySchema(schemaInitter(entityCompany, companySchema));
       setMetaMap(metaFlatMap(entityCompany, metaTypesMap));
     }
@@ -49,6 +55,7 @@ const CompanyForm = ({meta, dicts}: Props) => {
       {
         (entityCompany && dicts) ?
           <AnyForm
+            handleClose={handleClose}
             title={'Company form'}
             entity={entityCompany}
             dicts={dicts}
@@ -56,8 +63,8 @@ const CompanyForm = ({meta, dicts}: Props) => {
             initialValues={initialValues}
             schema={Yup.object(companySchema)}
             metaTypesMap={metaTypesMap}
-
-            handleSubmit={(values: any) => handleSubmit(values, entityCompany)}
+            // TODO: wire up redux
+            handleSubmit={(values: any) => createCompany(handleSubmit(values, entityCompany))}
           />
         :
           <span>No entity were found</span>

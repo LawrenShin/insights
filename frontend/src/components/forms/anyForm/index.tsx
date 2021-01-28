@@ -6,7 +6,8 @@ import {MetaFieldTypes} from "./helpers/valuesInitter";
 import {MetaMapType} from "./helpers/metaFlatMap";
 import {Country, Dictionaries, DictItem} from "../../api/types";
 import {renderField} from "./helpers/renderFields";
-
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import {Tooltip} from "@material-ui/core";
 
 export interface InitialValuesType {
   [key: string]: string | number | null | string[] | number[] | boolean | {};
@@ -20,6 +21,7 @@ interface Props {
   schema: Yup.ObjectSchema<any>;
   metaTypesMap: MetaMapType;
   handleSubmit: (values: InitialValuesType) => void;
+  handleClose: () => void;
 }
 
 
@@ -29,23 +31,36 @@ const AnyForm = ({
   entity,
   dicts,
   schema,
+  handleClose,
   metaTypesMap,
   handleSubmit,
   initialValues,
 }: Props) => {
   const classes = useStyles();
+
   return (
     <div className={classes.root}>
-      <div className={classes.borderBottom}>
-        <h1 className={classes.title}>{title}</h1>
+      <div className={`${classes.borderBottom} ${classes.closeIconContainer}`}>
+        <div><h1 className={classes.title}>{title}</h1></div>
+        <div className={classes.closeIcon}>
+          <Tooltip
+            title="Close"
+            aria-label="Close"
+            onClick={handleClose}
+          >
+            <HighlightOffIcon fontSize={'large'} />
+          </Tooltip>
+        </div>
       </div>
       <div>
         <Formik
+          enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={values => handleSubmit(values)}
           validationSchema={schema}
         >
-          <Form>
+          {({ initialValues }) => <Form>
+            {console.log(initialValues, 'fff')}
             {
               Object.keys(entity).map((key) => {
                 if (entity[key].fieldType !== MetaFieldTypes.NestedEntity) {
@@ -66,10 +81,13 @@ const AnyForm = ({
 
             }
             <div className={classes.buttonsContainer}>
-              <button type="reset">Cancel</button>
+              <button
+                type="reset"
+                onClick={handleClose}
+              >Cancel</button>
               <button type="submit">Submit</button>
             </div>
-          </Form>
+          </Form>}
         </Formik>
       </div>
     </div>

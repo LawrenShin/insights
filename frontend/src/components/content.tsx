@@ -39,11 +39,12 @@ const useStyles = makeStyles(
 interface Props {
   data: any;
   title: string;
+  callForm: () => JSX.Element;
 }
 
 const Content = (props: Props) => {
   const styles = useStyles();
-  const {data, title} = props;
+  const {data, title, callForm} = props;
 
   return(
     <Box className={styles.root} boxShadow={5}>
@@ -54,11 +55,7 @@ const Content = (props: Props) => {
           </Typography>
         </Box>
         <Box>
-          <Tooltip title="Edit" aria-label="Edit">
-            <Fab color="primary" className={styles.fab}>
-              <EditIcon fontSize={'small'} />
-            </Fab>
-          </Tooltip>
+          {callForm()}
         </Box>
       </Box>
       <Box>

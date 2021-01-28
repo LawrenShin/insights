@@ -30,3 +30,9 @@ export interface FetchTokenFail {
 }
 
 export type FetchTokenAction = FetchToken | FetchTokenSuccess | FetchTokenFail;
+
+export enum FormModes {
+  ADD= 'ADD',
+  EDIT = 'EDIT',
+  HIDDEN = 'HIDDEN',
+}
