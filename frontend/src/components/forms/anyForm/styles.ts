@@ -8,8 +8,8 @@ export default makeStyles((theme: Theme) =>
       padding: theme.spacing(0, 0, 0, 8),
       background: '#1a202c',
       overflow: 'scroll',
-      maxHeight: '100vh',
-      maxWidth: '60%',
+      height: '100vh',
+      width: '60%',
       position: 'fixed',
       right: '0%',
       zIndex: 200,
@@ -20,6 +20,7 @@ export default makeStyles((theme: Theme) =>
     },
     title: {
       marginTop: '.5em',
+      marginRight: '10px'
     },
     borderBottom: {
       borderBottom: '1px solid',
@@ -43,6 +44,9 @@ export default makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'baseline',
     },
+    loader: {
+      marginTop: '1rem',
+    },
     closeIcon: {
       margin: theme.spacing(0, '20px', 0, 0),
       '&:hover': {
@@ -50,5 +54,17 @@ export default makeStyles((theme: Theme) =>
         color: 'red',
       }
     },
+    formTitleControlsContainer: {
+      'button': {
+        height: 'fit-content',
+      },
+      display: 'flex',
+      gap: '10px',
+      alignItems: 'flex-end',
+    },
+    selectedTab: {
+      background: '#1a202c',
+      color: 'white',
+    }
   }),
 );

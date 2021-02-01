@@ -1,4 +1,4 @@
-
+// TODO: check all comparisons with enum and bring all of it's values to lower case
 export enum MetaFieldTypes {
   Array = 'array',
   Boolean = 'boolean',
