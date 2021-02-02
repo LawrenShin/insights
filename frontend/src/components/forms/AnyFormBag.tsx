@@ -19,6 +19,7 @@ interface DispatchProps {
 interface OwnProps {
   selectedCompany: any;
   handleClose: () => void;
+  formName: string;
 }
 
 interface Props extends OwnProps, DispatchProps{
@@ -43,33 +44,37 @@ const handleSubmit = (values: any, meta: any, dispatcher?: any) => {
   return filledMetaCopy;
 }
 
-const CompanyForm = ({
+const AnyFormBag = ({
+  formName,
   meta, dicts, selectedCompany,
   handleClose, initForm, submitForm,
 }: Props) => {
-  const entityCompany = meta?.company;
+  let entity: any = null;
+  if (meta) {
+    entity = meta[formName];
+  }
 
   const [initialValues, setInitialValues] = useState({});
   const [companySchema, setCompanySchema] = useState({});
   const [metaTypesMap, setMetaMap] = useState(new Map());
 
   useEffect(() => {
-    initForm({formName: 'company', error: null});
-    if (entityCompany) {
-      setInitialValues(valuesInitter(entityCompany, initialValues, selectedCompany));
-      setCompanySchema(schemaInitter(entityCompany, companySchema));
-      setMetaMap(metaFlatMap(entityCompany, metaTypesMap));
+    initForm({formName, error: null});
+    if (entity) {
+      setInitialValues(valuesInitter(entity, initialValues, selectedCompany));
+      setCompanySchema(schemaInitter(entity, companySchema));
+      setMetaMap(metaFlatMap(entity, metaTypesMap));
     }
   }, []);
 
   return (
     <>
       {
-        (entityCompany && dicts) ?
+        (entity && dicts) ?
           <AnyForm
             handleClose={handleClose}
-            formName={'company'}
-            entity={entityCompany}
+            formName={formName}
+            entity={entity}
             dicts={dicts}
 
             initialValues={initialValues}
@@ -78,10 +83,10 @@ const CompanyForm = ({
             // TODO: wire up redux
             handleSubmit={(values: any) => {
               console.log(values);
-              // submitForm({
-              //   formName: 'company',
-              //   data: handleSubmit(values, entityCompany),
-              // });
+              submitForm({
+                formName,
+                data: handleSubmit(values, entity),
+              });
             }}
           />
         :
@@ -103,4 +108,4 @@ const connector = connect(
   })
 );
 
-export default connector(CompanyForm);
+export default connector(AnyFormBag);

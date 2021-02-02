@@ -1,6 +1,6 @@
 import {RequestStatus} from "../../api/types";
 import {call, put, takeEvery} from "redux-saga/effects";
-import {companyApi} from "../../api";
+import {anyFormApi} from "../../api";
 import {CreateAction} from "../../../store/action";
 
 
@@ -36,7 +36,7 @@ const initState = {
 
 function* workerSaga(action: SubmitAnyFormAction) {
   try {
-    const res = yield call(companyApi, action.payload.data);
+    const res = yield call(anyFormApi, action.payload.data, action.payload.formName);
     yield put(CreateAction(AnyFormActionTypes.ANY_FORM_SUCCESS, res));
   } catch (error) {
     yield put(CreateAction(AnyFormActionTypes.ANY_FORM_FAIL, error.message));

@@ -4,6 +4,7 @@ import {MetaFieldTypes} from "./valuesInitter";
 export const typeRenaming = (type: string, mode?: boolean): string => {
   if (type === MetaFieldTypes.Percentage) return mode ? type : 'string';
   if (type === MetaFieldTypes.Float) return 'string';
+  if (type === MetaFieldTypes.DropDown) return 'string';
   if (type === MetaFieldTypes.Integer) return 'number';
   return type;
 }
@@ -36,7 +37,6 @@ export const schemaInitter = (
       if (fieldType !== MetaFieldTypes.NestedEntity) {
 
         const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase(), true);
-
         // TODO: not an elegant solution with Percentage type
         // @ts-ignore
         let fieldSchemaType = Yup[fieldTypeRenamed === MetaFieldTypes.Percentage ? 'number' : fieldTypeRenamed]();

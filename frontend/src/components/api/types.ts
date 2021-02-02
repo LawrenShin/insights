@@ -25,6 +25,7 @@ export interface Dictionaries {
 }
 
 export interface Meta {
+  [key: string]: any;
   company: any;
   person: any;
 };

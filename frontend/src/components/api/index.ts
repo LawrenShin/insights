@@ -32,8 +32,8 @@ export async function fetchToken(creds: Creds) {
   return await response.json();
 }
 
-export async function companyApi(company: any) {
-  const response = await post('companies', company);
+export async function anyFormApi(company: any, formName: string) {
+  const response = await post(formName === 'company' ? 'companies' : 'people', company);
   return await response.json();
 }
 
