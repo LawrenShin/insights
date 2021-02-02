@@ -26,65 +26,59 @@ export const renderField = (
     const type = metaTypesMap.get(key)?.type;
     const displayName = metaTypesMap.get(key)?.displayName;
 
-    // if (type === MetaFieldTypes.Array && tab === Tabs.ARRAYS) {
-    //   // console.log(values[key], key, meta, 'ARRA')
-    // }
+    if (type === MetaFieldTypes.Number) {
+      return <Fields.Input
+        className={classes ? classes.input : null}
+        label={displayName}
+        name={key}
+        type={'number'}
+      />
+    }
 
-    // if (tab === Tabs.FIELDS) {
-      if (type === MetaFieldTypes.Number) {
-        return <Fields.Input
-          className={classes ? classes.input : null}
-          label={displayName}
-          name={key}
-          type={'number'}
-        />
-      }
+    if (type === MetaFieldTypes.Boolean) {
+      return <Fields.Checkbox
+        className={classes ? classes.checkbox : null}
+        name={key}
+        type={'checkbox'}
+      >
+        <label htmlFor={key} className={classes.checkBoxLabel}>{displayName}</label>
+      </Fields.Checkbox>
+    }
 
-      if (type === MetaFieldTypes.Boolean) {
-        return <Fields.Checkbox
-          className={classes ? classes.checkbox : null}
-          name={key}
-          type={'checkbox'}
-        >
-          <label htmlFor={key} className={classes.checkBoxLabel}>{displayName}</label>
-        </Fields.Checkbox>
-      }
+    if (type === MetaFieldTypes.String) {
+      return <Fields.Input
+        className={classes ? classes.input : null}
+        label={displayName}
+        name={key}
+        type={'text'}
+      />
+    }
 
-      if (type === MetaFieldTypes.String) {
-        return <Fields.Input
-          className={classes ? classes.input : null}
-          label={displayName}
-          name={key}
-          type={'text'}
-        />
-      }
+    if (type === MetaFieldTypes.Percentage) {
+      return <Fields.Input
+        className={classes ? classes.input : null}
+        label={displayName}
+        name={key}
+        type={'number'}
+        max={100}
+        min={0}
+      />
+    }
 
-      if (type === MetaFieldTypes.Percentage) {
-        return <Fields.Input
-          className={classes ? classes.input : null}
-          label={displayName}
-          name={key}
-          type={'number'}
-          max={100}
-          min={0}
-        />
-      }
-
-      if (type === MetaFieldTypes.DropDown) {
-        return <Fields.Select
-          className={classes.input}
-          label={displayName}
-          name={key}
-        >
-          {
-            // @ts-ignore
-            dicts[key]?.map(
-              (option: Country | DictItem) => <option value={option.id}>{option.name}</option>
-            )
-          }
-        </Fields.Select>
-      }
-    // }
+    if (type === MetaFieldTypes.DropDown) {
+      return <Fields.Select
+        className={classes.input}
+        label={displayName}
+        name={key}
+      >
+        {
+          // @ts-ignore
+          dicts[key]?.map(
+            (option: Country | DictItem) => <option value={option.id}>{option.name}</option>
+          )
+        }
+      </Fields.Select>
+    }
 
     return <></>;
   }
