@@ -34,14 +34,14 @@ export const renderField = (
       label: type !== MetaFieldTypes.Boolean ? displayName : undefined,
     };
     if (index !== undefined && tab === Tabs.ARRAYS) {
-      if (externalKey)
+      if (externalKey) {
+        const nameForValueField = type === MetaFieldTypes.Boolean ? 'checked' : 'value';
         props = {
-        ...props,
-        disabled: true,
-        value: values[externalKey][index][key],
+          ...props,
+          disabled: true,
+          [nameForValueField]: values[externalKey][index][key],
+        }
       }
-      if (externalKey)
-        console.log(name, values[externalKey][index][key], 'val')
     }
 
     if (type === MetaFieldTypes.Number) {

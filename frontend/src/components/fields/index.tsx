@@ -2,8 +2,6 @@ import React from 'react';
 import {
   useField,
   FieldConfig,
-  FieldArray,
-  FieldArrayConfig,
 } from "formik";
 
 interface InputProps extends FieldConfig {
@@ -15,10 +13,6 @@ interface InputProps extends FieldConfig {
   disabled?: boolean;
 }
 
-interface InputArrayFieldProps extends FieldArrayConfig {
-  label: string;
-}
-
 const preventSymbols = (evt: React.KeyboardEvent) => {
   if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
   {
@@ -28,7 +22,7 @@ const preventSymbols = (evt: React.KeyboardEvent) => {
 
 export const Input: React.FC<InputProps> = ({ label, ...props }) => {
   const [field, meta] = useField(props);
-  // console.log(props, 'K')
+
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>
@@ -77,15 +71,3 @@ export const Select: React.FC<InputProps> = ({ label, ...props }) => {
     </div>
   );
 };
-
-export const Array: React.FC<InputArrayFieldProps> = ({ label, ...props }) => {
-  return (
-    <FieldArray {...props}>
-      {({ insert, remove, push }) => (
-        <>
-
-        </>
-      )}
-    </FieldArray>
-  )
-}

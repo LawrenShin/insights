@@ -134,8 +134,7 @@ const AnyForm = ({
 
                 if (renderArrRelated && values !== null && Array.isArray(values[key])) return <>
                   <FieldArray name={key}>
-                    {({ insert, remove, push }) => (<>
-                      {/*{console.log(values[key], key)}*/}
+                    {({ remove, push }) => (<>
                       <h4>{entity[key].displayName}</h4>
                       <div className={classes.subEntity}>
 
@@ -148,11 +147,9 @@ const AnyForm = ({
                               flexDirection: 'column',
                               borderBottom: '1px solid white'
                             }}>
-                              {console.log(index)}
                               {
                                 Object.keys(entity[key].meta).map(
                                   (innerKey) => {
-                                    // console.log(initialValues.countries, '===');
                                     return innerKey !== 'isoCode' ? renderField(
                                       `${innerKey}`,
                                       // get vals here out of arr with index
