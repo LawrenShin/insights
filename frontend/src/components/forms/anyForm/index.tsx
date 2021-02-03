@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
-import {Form, Formik} from "formik";
+import {FieldArray, Form, Formik} from "formik";
 import * as Yup from 'yup';
 import useStyles from './styles';
 import {MetaFieldTypes} from "./helpers/valuesInitter";
@@ -12,6 +12,7 @@ import {Tooltip} from "@material-ui/core";
 import {RootState} from "../../../store/rootReducer";
 import {AnyFormType} from "./anyFormDuck";
 import Loader from '../../loader';
+import {array} from "yup";
 
 export interface InitialValuesType {
   [key: string]: string | number | null | string[] | number[] | boolean | {};
@@ -31,7 +32,7 @@ interface Props {
   schema: Yup.ObjectSchema<any>;
   entity: any;
   formName: string;
-  initialValues: InitialValuesType;
+  initialValues: any;
   metaTypesMap: MetaMapType;
   handleSubmit: (values: InitialValuesType) => void;
   handleClose: () => void;
@@ -131,25 +132,80 @@ const AnyForm = ({
                   </div>
                 </>
 
-                if (renderArrRelated) return <>
-                  <h4>{entity[key].displayName}</h4>
-                  <div className={classes.subEntity}>
-                    {
-                      Object.keys(entity[key].meta).map(
-                        (innerKey) => {
-                          return renderField(
-                            innerKey,
-                            initialValues[innerKey],
-                            metaTypesMap,
-                            dicts,
-                            values,
-                            tab,
-                            classes,
+                if (renderArrRelated && values !== null && Array.isArray(values[key])) return <>
+                  <FieldArray name={key}>
+                    {({ insert, remove, push }) => (<>
+                      {/*{console.log(values[key], key)}*/}
+                      <h4>{entity[key].displayName}</h4>
+                      <div className={classes.subEntity}>
+
+                      <>
+                        {/* render existing */}
+                        {
+                          values[key].length > 0 && values[key].map((val: any, index: any) => {
+                            return <div style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              borderBottom: '1px solid white'
+                            }}>
+                              {console.log(index)}
+                              {
+                                Object.keys(entity[key].meta).map(
+                                  (innerKey) => {
+                                    // console.log(initialValues.countries, '===');
+                                    return innerKey !== 'isoCode' ? renderField(
+                                      `${innerKey}`,
+                                      // get vals here out of arr with index
+                                      val[innerKey],
+                                      metaTypesMap,
+                                      dicts,
+                                      values,
+                                      tab,
+                                      classes,
+                                      index,
+                                      key,
+                                    ) : null
+                                  }
+                                )
+                              }
+                              <button
+                                type="button"
+                                className="secondary"
+                                style={{ width: 'fit-content', marginTop: '10px' }}
+                                onClick={() => remove(index)}
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          })
+                        }
+                        {/* render empty at last */}
+                        {
+                          Object.keys(entity[key].meta).map(
+                            (innerKey) => {
+                              return innerKey !== 'isoCode' ? renderField(
+                                `${innerKey}`,
+                                // get vals here out of arr with index
+                                initialValues[innerKey],
+                                metaTypesMap,
+                                dicts,
+                                values,
+                                tab,
+                                classes,
+                              ) : null
+                            }
                           )
                         }
-                      )
-                    }
-                  </div>
+                      </>
+
+                      </div>
+                      <button
+                        style={{ marginTop: '10px' }}
+                        type="button"
+                        onClick={() => push({ name: '', email: '' })}
+                      >Add</button>
+                    </>)}
+                  </FieldArray>
                 </>
               })
             }

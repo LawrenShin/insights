@@ -12,6 +12,7 @@ interface InputProps extends FieldConfig {
   className?: string;
   max?: string | number;
   min?: string | number;
+  disabled?: boolean;
 }
 
 interface InputArrayFieldProps extends FieldArrayConfig {
@@ -27,6 +28,7 @@ const preventSymbols = (evt: React.KeyboardEvent) => {
 
 export const Input: React.FC<InputProps> = ({ label, ...props }) => {
   const [field, meta] = useField(props);
+  // console.log(props, 'K')
   return (
     <>
       <label htmlFor={props.id || props.name}>{label}</label>

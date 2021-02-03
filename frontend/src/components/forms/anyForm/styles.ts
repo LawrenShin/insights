@@ -32,6 +32,9 @@ export default makeStyles((theme: Theme) =>
     },
     input: {
       padding: '5px !important',
+      '&:disabled': {
+        background: 'grey'
+      }
     },
     checkbox: {
       display: 'flex',

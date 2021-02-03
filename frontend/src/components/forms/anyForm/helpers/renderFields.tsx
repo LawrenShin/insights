@@ -20,45 +20,56 @@ export const renderField = (
   values: FormikValues,
   tab: Tabs,
   classes?: any,
-  meta?: any,
+  index?: number,
+  externalKey?: string,
 ): JSX.Element => {
   if (key !== 'id') {
     const type = metaTypesMap.get(key)?.type;
     const displayName = metaTypesMap.get(key)?.displayName;
+    const name = index !== undefined ? `${externalKey}.${key}.${index}` : key;
+
+    let props: any = {
+      name,
+      className: classes ? (type === MetaFieldTypes.Boolean ? classes.checkbox : classes.input) : null,
+      label: type !== MetaFieldTypes.Boolean ? displayName : undefined,
+    };
+    if (index !== undefined && tab === Tabs.ARRAYS) {
+      if (externalKey)
+        props = {
+        ...props,
+        disabled: true,
+        value: values[externalKey][index][key],
+      }
+      if (externalKey)
+        console.log(name, values[externalKey][index][key], 'val')
+    }
 
     if (type === MetaFieldTypes.Number) {
       return <Fields.Input
-        className={classes ? classes.input : null}
-        label={displayName}
-        name={key}
+        {...props}
         type={'number'}
       />
     }
 
     if (type === MetaFieldTypes.Boolean) {
       return <Fields.Checkbox
-        className={classes ? classes.checkbox : null}
-        name={key}
+        {...props}
         type={'checkbox'}
       >
-        <label htmlFor={key} className={classes.checkBoxLabel}>{displayName}</label>
+        <label htmlFor={name} className={classes.checkBoxLabel}>{displayName}</label>
       </Fields.Checkbox>
     }
 
     if (type === MetaFieldTypes.String) {
       return <Fields.Input
-        className={classes ? classes.input : null}
-        label={displayName}
-        name={key}
+        {...props}
         type={'text'}
       />
     }
 
     if (type === MetaFieldTypes.Percentage) {
       return <Fields.Input
-        className={classes ? classes.input : null}
-        label={displayName}
-        name={key}
+        {...props}
         type={'number'}
         max={100}
         min={0}
@@ -67,9 +78,7 @@ export const renderField = (
 
     if (type === MetaFieldTypes.DropDown) {
       return <Fields.Select
-        className={classes.input}
-        label={displayName}
-        name={key}
+        {...props}
       >
         {
           // @ts-ignore
