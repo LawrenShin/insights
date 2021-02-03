@@ -4,7 +4,7 @@ import {Box, Fab, List, Tooltip, Typography,} from '@material-ui/core';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import {ListItemType, ListItemTypeGen} from '../components/ListItems/types';
 import {RequestStatus} from "./api/types";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Loader from './loader';
 
 
 interface Props {
@@ -37,10 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(0, 0, 2),
       padding: theme.spacing(2, 2, 0),
     },
-    centerLoader: {
-      display: 'flex',
-      justifyContent: 'center',
-    }
   }),
 );
 
@@ -74,9 +70,7 @@ export default function ListComponent (props: Props) {
           <List>
             {
               status === RequestStatus.LOADING ?
-              <div className={classes.centerLoader}>
-                <CircularProgress />
-              </div>
+              <Loader />
                 :
               data && generate(elementGen, data, elementClick)
             }

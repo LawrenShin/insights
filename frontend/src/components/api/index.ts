@@ -1,4 +1,4 @@
-import {Creds, Token} from "../forms/types";
+import {Creds} from "../forms/types";
 import {ListRequestConfig} from "../../components/listDuck";
 
 
@@ -26,14 +26,14 @@ export const get = (url: string, params?: string) => fetch(`${host}/${url}/${par
   referrerPolicy: 'no-referrer',
 })
 
-
+// TODO: can refactor these and place 'em all in one
 export async function fetchToken(creds: Creds) {
   const response = await post(`login`, creds);
   return await response.json();
 }
 
-export async function createCompany(company: any) {
-  const response = await post('companies', company);
+export async function anyFormApi(company: any, formName: string) {
+  const response = await post(formName === 'company' ? 'companies' : 'people', company);
   return await response.json();
 }
 

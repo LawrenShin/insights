@@ -21,6 +21,7 @@ const useStyles = makeStyles(
       fontWeight: 'bold',
     },
     tooltipContainer: {
+      gap: '20px',
       display: 'flex',
       borderBottom: '5px solid #ccc',
       marginBottom: theme.spacing(2),
@@ -39,12 +40,13 @@ const useStyles = makeStyles(
 interface Props {
   data: any;
   title: string;
-  callForm: () => JSX.Element;
+  callCompanyForm: () => JSX.Element;
+  callPersonForm: () => JSX.Element;
 }
 
 const Content = (props: Props) => {
   const styles = useStyles();
-  const {data, title, callForm} = props;
+  const {data, title, callCompanyForm, callPersonForm} = props;
 
   return(
     <Box className={styles.root} boxShadow={5}>
@@ -55,7 +57,10 @@ const Content = (props: Props) => {
           </Typography>
         </Box>
         <Box>
-          {callForm()}
+          {callPersonForm()}
+        </Box>
+        <Box>
+          {callCompanyForm()}
         </Box>
       </Box>
       <Box>
