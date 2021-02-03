@@ -21,5 +21,4 @@ COPY . .
 
 EXPOSE 8080
 
-# CMD [ "node", "server.js" ]
 CMD [ "serve" , "-s", "build", "-p", "8080"]
