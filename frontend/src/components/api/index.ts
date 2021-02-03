@@ -2,7 +2,8 @@ import {Creds} from "../forms/types";
 import {ListRequestConfig} from "../../components/listDuck";
 
 
-const host = 'https://xzmkcrhmk0.execute-api.us-east-2.amazonaws.com/Prod';
+// const host = 'https://xzmkcrhmk0.execute-api.us-east-2.amazonaws.com/Prod';
+const host = process.env.REACT_APP_HOST || process.env.HOST;
 
 const getHeaders = () => ({
   'Content-Type': 'application/json',
