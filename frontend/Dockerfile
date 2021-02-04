@@ -13,7 +13,10 @@ RUN npm build
 
 # Bundle app source
 COPY . .
+COPY .\build .\build_src
+
+RUN mv /build_src /build && chmod -R 777 /build
 
 EXPOSE 8080
 
-CMD [ "serve" , "-s", "build", "-p", "8080"]
+CMD [ "serve" , "-d", "-s", "build", "-p", "8080"]
