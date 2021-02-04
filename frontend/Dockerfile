@@ -4,6 +4,8 @@ ARG HOST
 
 ENV REACT_APP_HOST=$HOST
 
+RUN echo $REACT_APP_HOST
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
