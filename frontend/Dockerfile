@@ -14,7 +14,7 @@ COPY . .
 
 RUN echo REACT_APP_HOST='$HOST' > ./.env
 
-CAT ./.env
+RUN cat ./.env
 
 RUN npm run-script build:production
 
