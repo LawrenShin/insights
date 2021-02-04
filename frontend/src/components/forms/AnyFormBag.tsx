@@ -83,10 +83,10 @@ const AnyFormBag = ({
             // TODO: wire up redux
             handleSubmit={(values: any) => {
               console.log(values, 'submit');
-              // submitForm({
-              //   formName,
-              //   data: handleSubmit(values, entity),
-              // });
+              submitForm({
+                formName,
+                data: handleSubmit(values, entity),
+              });
             }}
           />
         :
