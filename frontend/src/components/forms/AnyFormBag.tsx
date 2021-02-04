@@ -17,6 +17,7 @@ interface DispatchProps {
 }
 
 interface OwnProps {
+  // TODO: refactor name
   selectedCompany: any;
   handleClose: () => void;
   formName: string;

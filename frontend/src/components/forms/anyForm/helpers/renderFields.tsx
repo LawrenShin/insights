@@ -22,24 +22,38 @@ export const renderField = (
   classes?: any,
   index?: number,
   externalKey?: string,
+  customOnChange?: (values: any) => void,
 ): JSX.Element => {
   if (key !== 'id') {
     const type = metaTypesMap.get(key)?.type;
     const displayName = metaTypesMap.get(key)?.displayName;
-    const name = index !== undefined ? `${externalKey}.${key}.${index}` : key;
+    const name = (index !== undefined) ? `${externalKey}.${key}.${index}` : key;
+    const nameForValueField = type === MetaFieldTypes.Boolean ? 'checked' : 'value';
 
     let props: any = {
       name,
       className: classes ? (type === MetaFieldTypes.Boolean ? classes.checkbox : classes.input) : null,
       label: type !== MetaFieldTypes.Boolean ? displayName : undefined,
+      [nameForValueField]: values[key] === undefined ? null : values[key],
     };
-    if (index !== undefined && tab === Tabs.ARRAYS) {
-      if (externalKey) {
-        const nameForValueField = type === MetaFieldTypes.Boolean ? 'checked' : 'value';
+    if (tab === Tabs.ARRAYS) {
+      if (index !== undefined) {
+        if (externalKey) {
+          props = {
+            ...props,
+            disabled: true,
+            [nameForValueField]: values[externalKey][index][key],
+          }
+        }
+      }
+      if (index === undefined && customOnChange) {
         props = {
           ...props,
-          disabled: true,
-          [nameForValueField]: values[externalKey][index][key],
+          onChange: (e: any) => {
+            return customOnChange({
+              [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
+            })
+          },
         }
       }
     }

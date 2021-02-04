@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {FieldArray, Form, Formik} from "formik";
 import * as Yup from 'yup';
 import useStyles from './styles';
-import {MetaFieldTypes} from "./helpers/valuesInitter";
+import {MetaFieldTypes, valuesInitter} from "./helpers/valuesInitter";
 import {MetaMapType} from "./helpers/metaFlatMap";
 import {Dictionaries, RequestStatus} from "../../api/types";
 import {renderField} from "./helpers/renderFields";
@@ -12,7 +12,8 @@ import {Tooltip} from "@material-ui/core";
 import {RootState} from "../../../store/rootReducer";
 import {AnyFormType} from "./anyFormDuck";
 import Loader from '../../loader';
-import {array} from "yup";
+import Sub from "./sub";
+import {schemaInitter} from "./helpers/schemaInitter";
 
 export interface InitialValuesType {
   [key: string]: string | number | null | string[] | number[] | boolean | {};
@@ -35,7 +36,7 @@ interface Props {
   initialValues: any;
   metaTypesMap: MetaMapType;
   handleSubmit: (values: InitialValuesType) => void;
-  handleClose: () => void;
+  handleClose?: () => void;
 }
 
 
@@ -52,6 +53,7 @@ const AnyForm = ({
   initialValues,
 }: Props & StateProps) => {
   const [tab, setTab] = useState<Tabs>(Tabs.FIELDS);
+  const [forArrays, setForArrays] = useState({});
   const classes = useStyles();
 
   return (
@@ -131,7 +133,7 @@ const AnyForm = ({
                     }
                   </div>
                 </>
-
+                // TODO: needs refactor
                 if (renderArrRelated && values !== null && Array.isArray(values[key])) return <>
                   <FieldArray name={key}>
                     {({ remove, push }) => (<>
@@ -176,34 +178,55 @@ const AnyForm = ({
                             </div>
                           })
                         }
-                        {/* render empty at last */}
-                        {
-                          Object.keys(entity[key].meta).map(
-                            (innerKey) => {
-                              return innerKey !== 'isoCode' ? renderField(
-                                `${innerKey}`,
-                                // get vals here out of arr with index
-                                initialValues[innerKey],
-                                metaTypesMap,
-                                dicts,
-                                values,
-                                tab,
-                                classes,
-                              ) : null
-                            }
-                          )
-                        }
-                      </>
+                         {/*render empty at last */}
+                         <Sub
+                           name={key}
+                           push={push}
+                           initialState={valuesInitter(entity[key].meta, {})}
+                           schema={Yup.object(schemaInitter(entity[key].meta, {}))}
+                           reactToChanges={(state: any) => {
+                              setForArrays({
+                                ...forArrays,
+                                  [key]: {...state}
+                                })
+                             }
+                           }
 
+                           renderFields={(setState: (newState: any) => void, state: any) => {
+                             return Object.keys(entity[key].meta).map(
+                               (innerKey) => {
+                                 return innerKey !== 'isoCode' ? renderField(
+                                   `${innerKey}`,
+                                   // get vals here out of arr with index
+                                   initialValues[innerKey],
+                                   metaTypesMap,
+                                   dicts,
+                                   values,
+                                   tab,
+                                   classes,
+                                   undefined,
+                                   undefined,
+                                   // custom onChange only for empty form of arrays
+                                   (value) => setState({...state, ...value})
+                                 ) : null
+                               }
+                             )
+                           }}
+                         />
+                      </>
                       </div>
-                      <button
-                        style={{ marginTop: '10px' }}
-                        type="button"
-                        onClick={() => push({ name: '', email: '' })}
-                      >Add</button>
+                      {/*<button*/}
+                      {/*  style={{ marginTop: '10px' }}*/}
+                      {/*  type="button"*/}
+                      {/*  onClick={() => {*/}
+                      {/*    console.log(values, key, 'click add');*/}
+                      {/*    // return push({name: '', email: ''})*/}
+                      {/*  }}*/}
+                      {/*>Add</button>*/}
                     </>)}
                   </FieldArray>
                 </>
+                // TODO: needs refactor
               })
             }
             <div className={classes.buttonsContainer}>

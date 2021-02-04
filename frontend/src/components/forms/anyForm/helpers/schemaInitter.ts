@@ -21,6 +21,7 @@ export const typeRenaming = (type: string, mode?: boolean): string => {
 // Array fields goes in separate forms. So here they be treated like NOT required, provided empty arrays.
 // NestedEntity means there's subset of fields that should be rendered in this form.
 // id key doesn't participate in form.
+// Also remember to wrap the output in Yup.object().shape(output)
 //
 export const schemaInitter = (
   meta: any,
@@ -32,8 +33,9 @@ export const schemaInitter = (
     const {
       fieldType,
       allowsNull,
+      isEditable,
     } = meta[key];
-    if (key !== 'id') {
+    if (key !== 'id' && isEditable) {
       if (fieldType !== MetaFieldTypes.NestedEntity) {
 
         const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase(), true);

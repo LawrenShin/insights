@@ -62,7 +62,7 @@ export const Select: React.FC<InputProps> = ({ label, ...props }) => {
     <div>
       <label htmlFor={props.id || props.name}>{label}</label>
       <select {...field} {...props}>
-        <option value={undefined}>Empty</option>
+        <option value={undefined}></option>
         {props.children}
       </select>
       {meta.error ? (
