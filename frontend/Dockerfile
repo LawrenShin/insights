@@ -6,6 +6,8 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+RUN ls
+
 RUN npm install
 RUN npm install -g serve
 
