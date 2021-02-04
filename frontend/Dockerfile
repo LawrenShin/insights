@@ -12,9 +12,7 @@ RUN npm install -g serve
 # Bundle app source
 COPY . .
 
-RUN echo REACT_APP_HOST='$HOST' > ./.env
-
-RUN cat ./.env
+RUN echo REACT_APP_HOST=$HOST > ./.env
 
 RUN npm run-script build:production
 
