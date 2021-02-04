@@ -1,12 +1,10 @@
 FROM node:14
 
-#USER root
+ARG HOST
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
-RUN ls
 
 RUN npm install
 RUN npm install -g serve
@@ -14,10 +12,11 @@ RUN npm install -g serve
 # Bundle app source
 COPY . .
 
-RUN npm run-script build
-#COPY ./build ./build_src
+RUN echo REACT_APP_HOST='$HOST' > ./.env
 
-#RUN mv ./build_src ./build && chmod -R 777 ./build
+CAT ./.env
+
+RUN npm run-script build:production
 
 EXPOSE 8080
 

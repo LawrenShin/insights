@@ -14,6 +14,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.12",
     "@types/react-router-dom": "^5.1.6",
+    "dotenv": "^8.2.0",
     "formik": "^2.2.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -32,6 +33,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-scripts build",
+	"build:production": "sh -ac '. .env; react-scripts build'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
