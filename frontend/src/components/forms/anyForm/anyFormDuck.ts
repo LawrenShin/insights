@@ -37,9 +37,20 @@ const initState = {
 function* workerSaga(action: SubmitAnyFormAction) {
   try {
     const res = yield call(anyFormApi, action.payload.data, action.payload.formName);
-    yield put(CreateAction(AnyFormActionTypes.ANY_FORM_SUCCESS, res));
+    yield put(
+      CreateAction(
+        AnyFormActionTypes.ANY_FORM_SUCCESS,
+        {
+          formName: action.payload.formName,
+          status: RequestStatus.STILL,
+        })
+    );
   } catch (error) {
-    yield put(CreateAction(AnyFormActionTypes.ANY_FORM_FAIL, error.message));
+    yield put(
+      CreateAction(AnyFormActionTypes.ANY_FORM_FAIL, {
+        formName: action.payload.formName,
+        error: error.message,
+      }));
   }
 }
 
@@ -73,6 +84,7 @@ export function Reducer (state: AnyFormState = initState, action: SubmitAnyFormA
   }
 
   if (action.type === AnyFormActionTypes.ANY_FORM_FAIL) {
+    console.log(action.type, action)
     return {
       ...state,
       forms: state.forms.map((form) =>

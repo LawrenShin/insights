@@ -8,13 +8,6 @@ export const typeRenaming = (type: string, mode?: boolean): string => {
   if (type === MetaFieldTypes.Integer) return 'number';
   return type;
 }
-// TODO: may be needed if it gets more complicated
-// const YupFieldConstructor = (type: string, required: boolean) => {
-//   if (type === 'string') {
-//     if (required) return Yup.string().required();
-//   }
-//   return Yup.string();
-// }
 
 
 // TODO:NOTES:

@@ -9,7 +9,6 @@ const Sub = ({
   initialState,
   renderFields,
   reactToChanges,
-  ...props
 }: any) => {
   const [state, setState] = useState(initialState);
 

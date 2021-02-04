@@ -37,6 +37,7 @@ export const renderField = (
       [nameForValueField]: values[key] === undefined ? null : values[key],
     };
     if (tab === Tabs.ARRAYS) {
+      // existing values of arrays render
       if (index !== undefined) {
         if (externalKey) {
           props = {
@@ -46,6 +47,7 @@ export const renderField = (
           }
         }
       }
+      // empty form behaviour
       if (index === undefined && customOnChange) {
         props = {
           ...props,
@@ -59,26 +61,17 @@ export const renderField = (
     }
 
     if (type === MetaFieldTypes.Number) {
-      return <Fields.Input
-        {...props}
-        type={'number'}
-      />
+      return <Fields.Input {...props} type={'number'} />
     }
 
     if (type === MetaFieldTypes.Boolean) {
-      return <Fields.Checkbox
-        {...props}
-        type={'checkbox'}
-      >
+      return <Fields.Checkbox {...props} type={'checkbox'}>
         <label htmlFor={name} className={classes.checkBoxLabel}>{displayName}</label>
       </Fields.Checkbox>
     }
 
     if (type === MetaFieldTypes.String) {
-      return <Fields.Input
-        {...props}
-        type={'text'}
-      />
+      return <Fields.Input {...props} type={'text'} />
     }
 
     if (type === MetaFieldTypes.Percentage) {
@@ -91,9 +84,7 @@ export const renderField = (
     }
 
     if (type === MetaFieldTypes.DropDown) {
-      return <Fields.Select
-        {...props}
-      >
+      return <Fields.Select {...props}>
         {
           // @ts-ignore
           dicts[key]?.map(

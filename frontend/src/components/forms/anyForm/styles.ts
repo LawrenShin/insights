@@ -68,6 +68,10 @@ export default makeStyles((theme: Theme) =>
     selectedTab: {
       background: '#1a202c',
       color: 'white',
+    },
+    error: {
+      marginBottom: '20px',
+      fontSize: '0.9em',
     }
   }),
 );

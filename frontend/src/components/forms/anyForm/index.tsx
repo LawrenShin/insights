@@ -178,7 +178,7 @@ const AnyForm = ({
                             </div>
                           })
                         }
-                         {/*render empty at last */}
+                         {/* render empty at last */}
                          <Sub
                            name={key}
                            push={push}
@@ -191,7 +191,7 @@ const AnyForm = ({
                                 })
                              }
                            }
-
+                           // gets real confusing here
                            renderFields={(setState: (newState: any) => void, state: any) => {
                              return Object.keys(entity[key].meta).map(
                                (innerKey) => {
@@ -215,14 +215,6 @@ const AnyForm = ({
                          />
                       </>
                       </div>
-                      {/*<button*/}
-                      {/*  style={{ marginTop: '10px' }}*/}
-                      {/*  type="button"*/}
-                      {/*  onClick={() => {*/}
-                      {/*    console.log(values, key, 'click add');*/}
-                      {/*    // return push({name: '', email: ''})*/}
-                      {/*  }}*/}
-                      {/*>Add</button>*/}
                     </>)}
                   </FieldArray>
                 </>
@@ -239,6 +231,7 @@ const AnyForm = ({
                   <Loader styles={classes.loader} /> : <button type="submit">Submit</button>
               }
             </div>
+            {form.status === RequestStatus.FAIL && <div className={`error ${classes.error}`}>{form.error}</div>}
           </Form>}
         </Formik>
       </div>
