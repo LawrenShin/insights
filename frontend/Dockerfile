@@ -13,9 +13,9 @@ RUN npm build
 
 # Bundle app source
 COPY . .
-COPY .\build .\build_src
+COPY ./build ./build_src
 
-RUN mv /build_src /build && chmod -R 777 /build
+RUN mv ./build_src ./build && chmod -R 777 ./build
 
 EXPOSE 8080
 
