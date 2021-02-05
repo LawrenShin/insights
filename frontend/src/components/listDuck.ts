@@ -147,7 +147,7 @@ export function InitReducer (listName: string) {
     }
     if (type === ListActionTypes.LIST_DELETE) {
       return {
-        // TODO: implement filter once u get the filtering field
+        // TODO: implement delete
         // data: state.data.filter()
         ...state,
         selected: null,

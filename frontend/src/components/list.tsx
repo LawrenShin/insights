@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme: Theme) =>
     demo: {
       backgroundColor: theme.palette.background.paper,
     },
+    centerLoader: {
+      height: '60%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     title: {
       margin: theme.spacing(0, 0, 2),
       padding: theme.spacing(2, 2, 0),
@@ -71,7 +77,7 @@ export default function ListComponent (props: Props) {
             {search(status === RequestStatus.LOADING)}
           </Grid>
         </>
-        <div className={classes.demo}>
+        <div className={`${classes.demo} ${status === RequestStatus.LOADING ? classes.centerLoader : ''}`}>
           <List>
             {
               status === RequestStatus.LOADING ?
