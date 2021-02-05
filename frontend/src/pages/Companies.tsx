@@ -6,7 +6,7 @@ import Content from "../components/content";
 import ListComponent from '../components/list';
 import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
-import {Box, Fab, Tooltip} from "@material-ui/core";
+import {Box, Fab, Grid, Tooltip} from "@material-ui/core";
 import AnyFormBag from "../components/forms/AnyFormBag";
 import {loadDicts, loadMeta} from "../components/api/dictsDuck";
 import {RequestStatus} from "../components/api/types";
@@ -15,18 +15,21 @@ import {companiesPageStyles} from './styles';
 import {Add as AddIcon, Edit as EditIcon} from "@material-ui/icons";
 import {FormModes} from "../components/forms/types";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import SearchIcon from "@material-ui/icons/Search";
+import {ConnectedSearch} from "../components/fields";
 
 
 const Companies = (props: any) => {
   const {
     data: companiesData, selected: company,
-    meta, dicts, dictsMetaStatus, dictsMetaError,
+    meta, dicts, dictsMetaStatus, dictsMetaError, status: metaStatus,
     selectCompany, deleteCompany, loadList, loadDicts, loadMeta
   } = props;
 
   const classes = companiesPageStyles();
   const [showForm, setShowForm] = useState<FormModes>(FormModes.HIDDEN);
   const [formName, setFormName] = useState<string>('');
+  // TODO: move to redux
   const [pageSize, setPageSize] = useState<number>(companiesData?.data?.pagination.pageSize | 10);
   const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 1);
 
@@ -63,6 +66,7 @@ const Companies = (props: any) => {
       <ListComponent
         data={companiesData.data?.companies}
         status={companiesData.status}
+        metaStatus={metaStatus}
         elementGen={CompanyListItem}
         elementClick={{selectCompany, deleteCompany}}
         title={'List of companies'}
@@ -81,13 +85,23 @@ const Companies = (props: any) => {
             </Fab>
           </Tooltip>
         }
+        search={(disabled: boolean) => (<>
+          <SearchIcon className={classes.svgSearch} />
+          <ConnectedSearch
+            disabled={disabled}
+            label="Search"
+            name="companies"
+            pagination={`page_index=${page}&page_size=${pageSize}`}
+            className={classes.searchBar}
+          />
+        </>)}
         pagination={
           () => companiesData?.data?.pagination && <TablePagination
             className={classes.root}
             component="div"
             count={companiesData?.data?.pagination.pageCount * companiesData?.data?.pagination.pageSize}
-            page={page}
             onChangePage={handleChangePage}
+            page={page}
             rowsPerPage={pageSize}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             rowsPerPageOptions={[10, 30, 50, 100, 200, 300]}

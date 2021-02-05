@@ -7,6 +7,8 @@ import {fetchList} from "./api";
 // types
 export enum ListActionTypes {
   LIST_LOAD = 'LIST_LOAD',
+  LIST_SEARCH = 'LIST_SEARCH',
+  LIST_SEARCH_CLEAR = 'LIST_SEARCH_CLEAR',
   LIST_LOAD_SUCCESS = 'LIST_LOAD_SUCCESS',
   LIST_LOAD_FAIL = 'LIST_LOAD_FAIL',
 
@@ -18,6 +20,16 @@ export interface ListRequestConfig {
   url: string;
   params?: string;
 }
+
+export interface ListSearchType {
+  type: ListActionTypes.LIST_SEARCH;
+  payload: ListRequestConfig;
+}
+export interface ListSearchClearType {
+  type: ListActionTypes.LIST_SEARCH_CLEAR;
+  payload: ListRequestConfig;
+}
+
 
 export interface ListLoadType {
   type: ListActionTypes.LIST_LOAD;
@@ -50,7 +62,7 @@ export interface Data {
   status: RequestStatus;
 }
 
-export type ListActionType = ListDeleteType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess;
+export type ListActionType = ListDeleteType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess | ListSearchClearType | ListSearchType;
 
 
 //actions
@@ -73,6 +85,8 @@ export function* workerSaga( action: ListActionType ) {
 }
 export function* watcherSaga() {
   yield takeLatest(ListActionTypes.LIST_LOAD, workerSaga);
+  yield takeLatest(ListActionTypes.LIST_SEARCH, workerSaga);
+  yield takeLatest(ListActionTypes.LIST_SEARCH_CLEAR, workerSaga);
 }
 
 // reducer
@@ -86,45 +100,60 @@ const initState = {
   data: initData,
   selected: null,
 }
-// TODO: figure out how to make it reusable
-export function Reducer(state: ListStateType = initState, action: ListActionType): ListStateType {
-  const {type, payload} = action;
+// TODO: figure out how to make it reusable.
+// now it seems to be reusable. To finish make reducer recognize it's related actions
+export function InitReducer (listName: string) {
+  return function Reducer(state: ListStateType = initState, action: ListActionType): ListStateType {
+    const {type, payload} = action;
 
-  if (type === ListActionTypes.LIST_LOAD) return {
-    ...state,
-    data: {
-      ...state.data,
-      status: RequestStatus.LOADING,
+    if (type === ListActionTypes.LIST_SEARCH || type === ListActionTypes.LIST_SEARCH_CLEAR) {
+      // didnt know what to do so casted
+      const r = payload as ListRequestConfig;
+      if (r.url === listName) return {
+        ...state,
+        data: {
+          ...state.data,
+          status: RequestStatus.LOADING,
+        }
+      }
     }
-  }
-  if (type === ListActionTypes.LIST_LOAD_SUCCESS) return {
-    ...state,
-    data: {
-      ...state.data,
-      data: action.payload as ListItemType[],
-      status: RequestStatus.STILL,
+
+    if (type === ListActionTypes.LIST_LOAD) return {
+      ...state,
+      data: {
+        ...state.data,
+        status: RequestStatus.LOADING,
+      }
     }
-  }
-  if (type === ListActionTypes.LIST_LOAD_FAIL) return {
-    ...state,
-    data: {
-      ...state.data,
-      error: action.payload as string,
-      status: RequestStatus.FAIL,
+    if (type === ListActionTypes.LIST_LOAD_SUCCESS) return {
+      ...state,
+      data: {
+        ...state.data,
+        data: action.payload as ListItemType[],
+        status: RequestStatus.STILL,
+      }
     }
-  }
+    if (type === ListActionTypes.LIST_LOAD_FAIL) return {
+      ...state,
+      data: {
+        ...state.data,
+        error: action.payload as string,
+        status: RequestStatus.FAIL,
+      }
+    }
 
     if (type === ListActionTypes.LIST_SELECT) {
-    return {...state, selected: payload as string | number}
-  }
-  if (type === ListActionTypes.LIST_DELETE) {
-    return {
-      // TODO: implement filter once u get the filtering field
-      // data: state.data.filter()
-      ...state,
-      selected: null,
+      return {...state, selected: payload as string | number}
     }
-  }
+    if (type === ListActionTypes.LIST_DELETE) {
+      return {
+        // TODO: implement filter once u get the filtering field
+        // data: state.data.filter()
+        ...state,
+        selected: null,
+      }
+    }
 
-  return state;
+    return state;
+  }
 }

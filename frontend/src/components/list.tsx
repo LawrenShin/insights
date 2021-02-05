@@ -1,6 +1,6 @@
 import React from 'react';
 import {v4 as uuidv4} from 'uuid';
-import {Box, Fab, List, Tooltip, Typography,} from '@material-ui/core';
+import {Box, Grid, List, Typography,} from '@material-ui/core';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import {ListItemType, ListItemTypeGen} from '../components/ListItems/types';
 import {RequestStatus} from "./api/types";
@@ -10,12 +10,14 @@ import Loader from './loader';
 interface Props {
   data: ListItemType[];
   status: RequestStatus;
+  metaStatus: RequestStatus;
   elementGen: ListItemTypeGen;
   elementClick: any;
   title: string;
   keyVal: string;
   pagination: () => JSX.Element;
   callForm: () => JSX.Element;
+  search: (disabled: boolean) => JSX.Element;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,7 +57,7 @@ function generate(elementGen: ListItemTypeGen, data: ListItemType[], elementClic
 
 export default function ListComponent (props: Props) {
   const classes = useStyles();
-  const {title, data, elementGen, elementClick, status, callForm} = props;
+  const {title, data, elementGen, elementClick, status, metaStatus, callForm, search} = props;
 
   return (
     <Box className={classes.root}>
@@ -63,8 +65,11 @@ export default function ListComponent (props: Props) {
         <>
           <Typography variant="h6" className={classes.title}>
             {title}
-            {callForm()}
+            {metaStatus !== RequestStatus.LOADING ? callForm() : <Loader />}
           </Typography>
+          <Grid container spacing={1} alignItems="flex-end">
+            {search(status === RequestStatus.LOADING)}
+          </Grid>
         </>
         <div className={classes.demo}>
           <List>
@@ -77,7 +82,7 @@ export default function ListComponent (props: Props) {
           </List>
         </div>
       </>
-      {props.pagination()}
+      {status !== RequestStatus.LOADING && props.pagination()}
     </Box>
   );
 }

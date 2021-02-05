@@ -28,4 +28,16 @@ export const companiesPageStyles = makeStyles((theme: Theme) =>
       width: '36px',
       height: '36px',
     },
+    searchBar: {
+      '& input': {
+        background: 'none',
+        border: 'none',
+        borderRadius: 0,
+        padding: theme.spacing('15px', '10px', '5px', '10px'),
+        width: '320px',
+      },
+    },
+    svgSearch: {
+      marginLeft: '20px',
+    },
   }))
