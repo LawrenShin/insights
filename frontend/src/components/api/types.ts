@@ -9,19 +9,19 @@ export interface DictItem {
   name: string;
 }
 export interface Country extends DictItem{
-  iso: string;
+  isoCode: string;
 }
 export interface Dictionaries {
-  countries: Country[];
-  educationLevels: DictItem[];
-  genders: DictItem[];
-  industries: DictItem[];
-  industryCodes: DictItem[];
-  maritalStatuses: DictItem[];
-  races: DictItem[];
-  regions: DictItem[];
-  religions: DictItem[];
-  roleTypes: DictItem[];
+  [key: string]: DictItem[] | Country[];
+  addressType: DictItem[];
+  country: Country[];
+  educationLevel: DictItem[];
+  gender: DictItem[];
+  industry: DictItem[];
+  industryCode: DictItem[];
+  race: DictItem[];
+  religion: DictItem[];
+  roleType: DictItem[];
 }
 
 export interface Meta {

@@ -30,6 +30,7 @@ export const companiesPageStyles = makeStyles((theme: Theme) =>
     },
     searchBar: {
       '& input': {
+        color: 'black',
         background: 'none',
         border: 'none',
         borderRadius: 0,

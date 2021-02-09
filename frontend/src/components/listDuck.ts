@@ -23,33 +23,43 @@ export interface ListRequestConfig {
 
 export interface ListSearchType {
   type: ListActionTypes.LIST_SEARCH;
-  payload: ListRequestConfig;
+  // payload: ListRequestConfig;
+  payload: any;
 }
 export interface ListSearchClearType {
   type: ListActionTypes.LIST_SEARCH_CLEAR;
-  payload: ListRequestConfig;
+  // payload: ListRequestConfig;
+  payload: any;
 }
 
 
 export interface ListLoadType {
   type: ListActionTypes.LIST_LOAD;
-  payload: ListRequestConfig;
+  // payload: ListRequestConfig;
+  payload: any;
 }
 export interface ListLoadTypeSuccess {
   type: ListActionTypes.LIST_LOAD_SUCCESS;
-  payload: ListItemType[];
+  // payload: ListItemType[];
+  payload: any;
 }
 export interface ListLoadTypeFail {
   type: ListActionTypes.LIST_LOAD_FAIL;
-  payload: string;
+  // payload: {
+  //   listName: string;
+  //   error: string | number;
+  // };
+  payload: any;
 }
 export interface ListDeleteType {
   type: ListActionTypes.LIST_DELETE;
-  payload: string | number;
+  // payload: string | number;
+  payload: any;
 }
 export interface ListSelectType {
   type: ListActionTypes.LIST_SELECT;
-  payload: string | number;
+  // payload: string | number;
+  payload: any;
 }
 
 export interface ListStateType {
@@ -66,21 +76,32 @@ export type ListActionType = ListDeleteType | ListSelectType | ListLoadType | Li
 
 
 //actions
+// change params to differ list actions from one another
 export const listDelete = (id: string | number) => CreateAction(ListActionTypes.LIST_DELETE, id);
+// change params to differ list actions from one another
 export const listSelect = (id: string | number) => CreateAction(ListActionTypes.LIST_SELECT, id);
 
 export const loadList = (config: ListRequestConfig) => CreateAction(ListActionTypes.LIST_LOAD, config);
-export const loadSuccess = (list: ListItemType[]) => CreateAction(ListActionTypes.LIST_LOAD_SUCCESS, list);
-export const loadListFail = (error: string) => CreateAction(ListActionTypes.LIST_LOAD_FAIL, error);
+export const loadSuccess = (data: { url: string, list: ListItemType[] }) => CreateAction(ListActionTypes.LIST_LOAD_SUCCESS, data);
+export const loadListFail = (
+  payload: {
+    url: string,
+    error: string | number,
+  }) => CreateAction(ListActionTypes.LIST_LOAD_FAIL, payload);
 
 
 // sagas
 export function* workerSaga( action: ListActionType ) {
   try {
     const list = yield call(fetchList, action.payload as ListRequestConfig);
-    yield put(loadSuccess(list));
+    yield put(loadSuccess({url: action.payload?.url, list}));
   } catch (error) {
-    yield put(loadListFail(error.message));
+    if (action.payload.hasOwnProperty('url')) {
+      yield put(loadListFail({
+        url: action.payload.url,
+        error: error.status === 403 ? error.status : error.message,
+      }))
+    }
   }
 }
 export function* watcherSaga() {
@@ -100,16 +121,15 @@ const initState = {
   data: initData,
   selected: null,
 }
-// TODO: figure out how to make it reusable.
-// now it seems to be reusable. To finish make reducer recognize it's related actions
+
 export function InitReducer (listName: string) {
   return function Reducer(state: ListStateType = initState, action: ListActionType): ListStateType {
     const {type, payload} = action;
 
     if (type === ListActionTypes.LIST_SEARCH || type === ListActionTypes.LIST_SEARCH_CLEAR) {
       // didnt know what to do so casted
-      const r = payload as ListRequestConfig;
-      if (r.url === listName) return {
+      // const r = payload as ListRequestConfig;
+      if (payload?.url === listName) return {
         ...state,
         data: {
           ...state.data,
@@ -118,22 +138,26 @@ export function InitReducer (listName: string) {
       }
     }
 
-    if (type === ListActionTypes.LIST_LOAD) return {
+    if (type === ListActionTypes.LIST_LOAD)
+      if (payload.url === listName) return {
       ...state,
       data: {
         ...state.data,
         status: RequestStatus.LOADING,
       }
     }
-    if (type === ListActionTypes.LIST_LOAD_SUCCESS) return {
-      ...state,
-      data: {
-        ...state.data,
-        data: action.payload as ListItemType[],
-        status: RequestStatus.STILL,
+    if (type === ListActionTypes.LIST_LOAD_SUCCESS)
+      if (payload.url === listName) return {
+          ...state,
+        data: {
+          ...state.data,
+          data: action.payload.list as ListItemType[],
+          status: RequestStatus.STILL,
+        }
       }
-    }
-    if (type === ListActionTypes.LIST_LOAD_FAIL) return {
+
+    if (type === ListActionTypes.LIST_LOAD_FAIL)
+      if (payload.url === listName) return {
       ...state,
       data: {
         ...state.data,

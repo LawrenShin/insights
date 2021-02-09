@@ -17,8 +17,7 @@ interface DispatchProps {
 }
 
 interface OwnProps {
-  // TODO: refactor name
-  selectedCompany: any;
+  existingValues: any;
   handleClose: () => void;
   formName: string;
 }
@@ -47,7 +46,7 @@ const handleSubmit = (values: any, meta: any, dispatcher?: any) => {
 
 const AnyFormBag = ({
   formName,
-  meta, dicts, selectedCompany,
+  meta, dicts, existingValues,
   handleClose, initForm, submitForm,
 }: Props) => {
   let entity: any = null;
@@ -62,7 +61,7 @@ const AnyFormBag = ({
   useEffect(() => {
     initForm({formName, error: null});
     if (entity) {
-      setInitialValues(valuesInitter(entity, initialValues, selectedCompany));
+      setInitialValues(valuesInitter(entity, initialValues, existingValues));
       setCompanySchema(schemaInitter(entity, companySchema));
       setMetaMap(metaFlatMap(entity, metaTypesMap));
     }

@@ -6,8 +6,15 @@ import {Input} from '../fields';
 import {Dispatch} from "redux";
 import {Creds, TokenActionTypes} from "./types";
 import {CreateAction} from "../../store/action";
+import {RootState} from "../../store/rootReducer";
+import {RequestStatus} from "../api/types";
+import Loader from "../loader";
 
-interface Props {
+interface StateProps {
+  status: RequestStatus;
+}
+
+interface Props extends StateProps{
   fetchToken: (creds: Creds) => void;
 }
 
@@ -38,7 +45,7 @@ const SignInForm = (props: Props) => {
             type={'text'}
           />
           <div>
-            <button type="submit">Submit</button>
+            {props.status !== RequestStatus.LOADING ? <button type="submit">Submit</button> : <Loader />}
           </div>
         </Form>
       </Formik>
@@ -47,7 +54,9 @@ const SignInForm = (props: Props) => {
 };
 
 const connector = connect(
-  undefined,
+  ({ SignInReducer: { status } }: RootState) => ({
+    status,
+  }),
   (dispatch: Dispatch) => ({
     fetchToken: (creds: Creds) => dispatch(CreateAction(TokenActionTypes.FETCH_TOKEN, creds)),
   })

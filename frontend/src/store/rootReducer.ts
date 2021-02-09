@@ -7,11 +7,11 @@ import {Reducer as DictsReducer} from '../components/api/dictsDuck';
 import {Reducer as AnyFormReducer} from '../components/forms/anyForm/anyFormDuck';
 
 const CompaniesListReducer = InitListReducer('companies');
-const PersonsListReducer = InitListReducer('persons');
+const PeopleListReducer = InitListReducer('people');
 
 const rootReducer = combineReducers({
   CompaniesListReducer,
-  PersonsListReducer,
+  PeopleListReducer,
   AnyFormReducer,
   SignInReducer,
   DictsReducer,

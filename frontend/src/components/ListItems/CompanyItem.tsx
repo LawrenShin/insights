@@ -3,7 +3,7 @@ import {Avatar, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, L
 import {Delete as DeleteIcon} from "@material-ui/icons";
 import {ListItemType} from "./types";
 import BusinessIcon from '@material-ui/icons/Business';
-
+// TODO: differ logic of lists
 const CompanyListItem = (company: ListItemType, handlers: any): JSX.Element => {
   const companyName = company.legalName;
 

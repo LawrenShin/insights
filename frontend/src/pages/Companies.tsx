@@ -31,7 +31,7 @@ const Companies = (props: any) => {
   const [formName, setFormName] = useState<string>('');
   // TODO: move to redux
   const [pageSize, setPageSize] = useState<number>(companiesData?.data?.pagination.pageSize | 10);
-  const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 1);
+  const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 0);
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -146,7 +146,7 @@ const Companies = (props: any) => {
       {(meta && showForm !== FormModes.HIDDEN) && <AnyFormBag
         formName={formName}
         handleClose={() => setShowForm(FormModes.HIDDEN)}
-        selectedCompany={
+        existingValues={
           showForm === FormModes.EDIT ? company : null
         }
       />}
