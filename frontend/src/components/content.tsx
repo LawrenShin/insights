@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useMemo} from 'react';
 import { connect } from 'react-redux';
 import {Avatar, Box, Chip, Typography} from "@material-ui/core";
 import { v4 as uuidv4} from 'uuid';
@@ -8,6 +8,11 @@ import {Data, ListRequestConfig, loadList} from "./listDuck";
 import {RootState} from "../store/rootReducer";
 import {DictItem} from "./api/types";
 
+enum Roles {
+  EXECUTIVES = 1,
+  BOARD,
+  BOTH,
+}
 
 enum Tabs {
   EXECUTIVES,
@@ -60,10 +65,10 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => 
     return Object.keys(entity).map((key, index) => {
       let nameInsteadOfKey = null;
       let personCleared = null;
-
-      if (typeof +key === 'number' && (entity[key]?.name || entity[key]?.title)) {
+      // chip displays on name prop.
+      if (typeof +key === 'number' && (entity[key]?.name)) {
         const {name, title, ...rest} = entity[key];
-        nameInsteadOfKey = entity[key]?.name || entity[key]?.title;
+        nameInsteadOfKey = entity[key]?.name;
         personCleared = rest
       }
 
@@ -97,6 +102,12 @@ const Content = (props: Props) => {
 
   const [tab, setTab] = useState<Tabs>(Tabs.CONTENT);
 
+  const filterByRoles = <T extends unknown>(people: T[], role: Roles):T[] =>
+    people.filter((person: any) => person.role.roleType === role || person.role.roleType === Roles.BOTH);
+
+  const executives = useMemo(() => filterByRoles(data.people, Roles.EXECUTIVES), [data.people, Roles.EXECUTIVES]);
+  const boards = useMemo(() => filterByRoles(data.people, Roles.BOARD), [data.people, Roles.BOARD]);
+
   const renderChip = (name: string, entity: any) => <Chip
     avatar={<Avatar>{name[0]}</Avatar>}
     label={name}
@@ -105,6 +116,12 @@ const Content = (props: Props) => {
     onClick={() => setSelectedPerson(entity)}
     onDelete={() => console.log(entity)}
   />
+  const renderGoBack = () => <button
+    className={styles.backButton}
+    type={'button'}
+    onClick={() => setTab(Tabs.CONTENT)}
+  >Back
+  </button>
 
   return(
     <Box className={styles.root} boxShadow={5}>
@@ -135,16 +152,16 @@ const Content = (props: Props) => {
       </Box>
       {dicts ? <Box>
         {tab === Tabs.CONTENT && renderFields(data, dicts, renderChip, styles)}
+
         {tab === Tabs.EXECUTIVES && <>
-          <button
-            className={styles.backButton}
-            type={'button'}
-            onClick={() => setTab(Tabs.CONTENT)}
-          >Back
-          </button>
-          {renderFields(data.people, dicts, renderChip, styles)}
+          {renderGoBack()}
+          {renderFields(executives, dicts, renderChip, styles)}
         </>}
-        {/*{tab === Tabs.BOARDS && renderFields(data.roles, dicts, styles)}*/}
+
+        {tab === Tabs.BOARDS && <>
+          {renderGoBack()}
+          {renderFields(boards, dicts, renderChip, styles)}
+        </>}
       </Box> : 'No Dicts'}
     </Box>
   )
@@ -152,7 +169,7 @@ const Content = (props: Props) => {
 
 export default connect(
   ({
-    DictsReducer: {data: {dicts}} ,
+    DictsReducer: {data: {dicts}},
   }: RootState) => ({
     dicts,
   }),
