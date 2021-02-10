@@ -80,7 +80,6 @@ const AnyFormBag = ({
             initialValues={initialValues}
             schema={Yup.object(companySchema)}
             metaTypesMap={metaTypesMap}
-            // TODO: wire up redux
             handleSubmit={(values: any) => {
               console.log(values, 'submit');
               submitForm({

@@ -6,7 +6,7 @@ import Content from "../components/content";
 import ListComponent from '../components/list';
 import CompanyListItem from '../components/ListItems/CompanyItem';
 import {RootState} from "../store/rootReducer";
-import {Box, Fab, Grid, Tooltip} from "@material-ui/core";
+import {Box, Fab, Tooltip} from "@material-ui/core";
 import AnyFormBag from "../components/forms/AnyFormBag";
 import {loadDicts, loadMeta} from "../components/api/dictsDuck";
 import {RequestStatus} from "../components/api/types";
@@ -29,7 +29,9 @@ const Companies = (props: any) => {
   const classes = companiesPageStyles();
   const [showForm, setShowForm] = useState<FormModes>(FormModes.HIDDEN);
   const [formName, setFormName] = useState<string>('');
-  // TODO: move to redux
+  // selection of a company handled by redux. But for person I saw no need in that.
+  const [selectedPerson, setSelectedPerson] = useState(null);
+  // TODO: move to redux... or not?
   const [pageSize, setPageSize] = useState<number>(companiesData?.data?.pagination.pageSize | 10);
   const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 0);
 
@@ -42,6 +44,16 @@ const Companies = (props: any) => {
     setPageSize(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const getExistingValues = () => {
+    if (formName === 'company') return company;
+    if (formName === 'person') return selectedPerson;
+  }
+
+  const setFormStates = (givenName: string, mode: FormModes) => {
+    setShowForm(showForm === FormModes.HIDDEN ? mode : FormModes.HIDDEN);
+    setFormName(givenName);
+  }
 
   useEffect(() => {
     loadList({
@@ -74,12 +86,7 @@ const Companies = (props: any) => {
         callForm={() => meta && <Tooltip
           title="Add"
           aria-label="add"
-          onClick={() => {
-            setShowForm(
-              showForm === FormModes.HIDDEN ? FormModes.ADD : FormModes.HIDDEN
-            );
-            setFormName('company');
-          }}>
+          onClick={() => {setFormStates('company', FormModes.ADD)}}>
             <Fab color="primary" className={classes.fab}>
               <AddIcon fontSize={'small'} />
             </Fab>
@@ -112,16 +119,15 @@ const Companies = (props: any) => {
       {company && <Content
         title={'Company details'}
         data={company}
+        setSelectedPerson={(person: any) => {
+          setSelectedPerson(person);
+          setFormStates('person', FormModes.EDIT);
+        }}
         // TODO: tooltips must be extracted to separate function.
         callPersonForm={() => meta && <Tooltip
           title="Add person"
           aria-label="Add person"
-          onClick={() => {
-            setShowForm(
-              showForm === FormModes.HIDDEN ? FormModes.EDIT : FormModes.HIDDEN
-            );
-            setFormName('person');
-          }}
+          onClick={() => {setFormStates('person', FormModes.ADD)}}
         >
           <Fab color="primary" className={classes.fab}>
             <PersonAddIcon fontSize={'small'} />
@@ -130,12 +136,7 @@ const Companies = (props: any) => {
         callCompanyForm={() => meta && <Tooltip
           title="Edit"
           aria-label="Edit"
-          onClick={() => {
-            setShowForm(
-              showForm === FormModes.HIDDEN ? FormModes.EDIT : FormModes.HIDDEN
-            );
-            setFormName('company');
-          }}
+          onClick={() => {setFormStates('company', FormModes.EDIT)}}
         >
           <Fab color="primary" className={classes.fab}>
             <EditIcon fontSize={'small'} />
@@ -146,9 +147,7 @@ const Companies = (props: any) => {
       {(meta && showForm !== FormModes.HIDDEN) && <AnyFormBag
         formName={formName}
         handleClose={() => setShowForm(FormModes.HIDDEN)}
-        existingValues={
-          showForm === FormModes.EDIT ? company : null
-        }
+        existingValues={showForm === FormModes.EDIT ? getExistingValues() : null}
       />}
     </Box>
   );

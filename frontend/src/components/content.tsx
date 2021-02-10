@@ -24,12 +24,13 @@ interface DispatchProps {
 interface Props extends DispatchProps, StateProps{
   data: any;
   title: string;
-  callCompanyForm: () => JSX.Element;
+  setSelectedPerson: (person: any) => void;
   callPersonForm: () => JSX.Element;
+  callCompanyForm: () => JSX.Element;
 }
 
 // differ fields by types
-const renderField = (element: any, fieldName: string, dicts: any, styles: any) => {
+const renderField = (element: any, fieldName: string, dicts: any, renderChip: any, styles: any) => {
   if (typeof element === 'boolean') {
     return <span>{element ? 'Yes' : 'No'}</span>
   }
@@ -41,19 +42,19 @@ const renderField = (element: any, fieldName: string, dicts: any, styles: any) =
   if (Array.isArray(element)) {
     return element.length ? <div style={{marginLeft: '20px'}}>
       {element.map((el: any) => <div>
-        {renderFields(el, dicts, styles)}
+        {renderFields(el, dicts, renderChip, styles)}
       </div>)}
     </div> : 'Empty';
   }
   if (typeof element === 'object') {
     if (element === null) return 'No data';
     return <div style={{marginLeft: '20px'}}>
-      {renderFields(element, dicts, styles)}
+      {renderFields(element, dicts, renderChip, styles)}
     </div>
   }
 }
 
-const renderFields = (entity: any, dicts: any, styles: any) => {
+const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => {
   if (entity) {
     // get name for person and place one instead of key on entity
     return Object.keys(entity).map((key, index) => {
@@ -76,17 +77,12 @@ const renderFields = (entity: any, dicts: any, styles: any) => {
         >
           <span className={styles.fieldName}>
             {nameInsteadOfKey ?
-              <Chip
-                avatar={<Avatar>{nameInsteadOfKey[0]}</Avatar>}
-                label={nameInsteadOfKey}
-                color="primary"
-                clickable
-              />
+              renderChip(nameInsteadOfKey, entity[key])
               :
               `${key[0].toUpperCase()}${key.substr(1, key.length)}: `
             }
           </span>
-          {renderField(personCleared || entity[key], key, dicts, styles)}
+          {renderField(personCleared || entity[key], key, dicts, renderChip, styles)}
         </div>
       }
     });
@@ -97,11 +93,18 @@ const renderFields = (entity: any, dicts: any, styles: any) => {
 
 const Content = (props: Props) => {
   const styles = useStyles();
-  const {
-    data, title, callCompanyForm, callPersonForm, dicts,
-  } = props;
+  const {data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson} = props;
 
   const [tab, setTab] = useState<Tabs>(Tabs.CONTENT);
+
+  const renderChip = (name: string, entity: any) => <Chip
+    avatar={<Avatar>{name[0]}</Avatar>}
+    label={name}
+    color="primary"
+    clickable
+    onClick={() => setSelectedPerson(entity)}
+    onDelete={() => console.log(entity)}
+  />
 
   return(
     <Box className={styles.root} boxShadow={5}>
@@ -130,18 +133,19 @@ const Content = (props: Props) => {
           {callCompanyForm()}
         </Box>
       </Box>
-      <Box>
-        {tab === Tabs.CONTENT && renderFields(data, dicts, styles)}
+      {dicts ? <Box>
+        {tab === Tabs.CONTENT && renderFields(data, dicts, renderChip, styles)}
         {tab === Tabs.EXECUTIVES && <>
           <button
             className={styles.backButton}
             type={'button'}
             onClick={() => setTab(Tabs.CONTENT)}
-          >Back</button>
-          {renderFields(data.people, dicts, styles)}
+          >Back
+          </button>
+          {renderFields(data.people, dicts, renderChip, styles)}
         </>}
         {/*{tab === Tabs.BOARDS && renderFields(data.roles, dicts, styles)}*/}
-      </Box>
+      </Box> : 'No Dicts'}
     </Box>
   )
 }
