@@ -21,11 +21,19 @@ const post = <T extends {}>(url: string, data: T) => fetch(`${host}/${url}`, {
   body: JSON.stringify(data),
 });
 
-export const get = (url: string, params?: string) => fetch(`${host}/${url}/${params ? '?'+params : ''}`, {
-  method: 'GET',
-  headers: getHeaders(),
-  referrerPolicy: 'no-referrer',
-})
+export const get = (url: string, params?: string) =>
+  fetch(`${host}/${url}/${params ? '?'+params : ''}`, {
+    method: 'GET',
+    headers: getHeaders(),
+    referrerPolicy: 'no-referrer',
+  })
+
+export const del = ({ url, params }: ListRequestConfig) =>
+  fetch(`${host}/${url}/${params ? '?'+params : ''}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+    referrerPolicy: 'no-referrer',
+  })
 
 // TODO: can refactor these and place 'em all in one
 export async function fetchToken(creds: Creds) {
