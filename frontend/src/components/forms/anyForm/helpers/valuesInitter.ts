@@ -31,7 +31,6 @@ const metaFieldTypesSwitcher = (
 // initValues - empty object
 // existing values - vals of a company on edit mode
 export const valuesInitter = <T extends {}>(meta: any, initValues: T, existingValues?: any): T => {
-
   Object.keys(meta).forEach((key, index) => {
     const {
       fieldType,
@@ -42,7 +41,7 @@ export const valuesInitter = <T extends {}>(meta: any, initValues: T, existingVa
       initValues = {...initValues, [key]: (existingValues && existingValues[key]) ?
           existingValues[key] : metaFieldTypesSwitcher(fieldType.toLowerCase(), allowsNull)};
     } else {
-      initValues = {...initValues, ...valuesInitter(meta[key].meta, {})};
+      initValues = {...initValues, ...valuesInitter(meta[key].meta, {}, existingValues[key])};
     }
   })
   return initValues;

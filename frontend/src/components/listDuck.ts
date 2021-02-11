@@ -2,17 +2,21 @@ import {ListItemType} from "../components/ListItems/types";
 import {CreateAction} from "../store/action";
 import {RequestStatus} from "../components/api/types";
 import {call, put, takeLatest} from "redux-saga/effects";
-import {fetchList} from "./api";
+import {del, fetchList} from "./api";
 
 // types
 export enum ListActionTypes {
   LIST_LOAD = 'LIST_LOAD',
-  LIST_SEARCH = 'LIST_SEARCH',
-  LIST_SEARCH_CLEAR = 'LIST_SEARCH_CLEAR',
   LIST_LOAD_SUCCESS = 'LIST_LOAD_SUCCESS',
   LIST_LOAD_FAIL = 'LIST_LOAD_FAIL',
 
+  LIST_SEARCH = 'LIST_SEARCH',
+  LIST_SEARCH_CLEAR = 'LIST_SEARCH_CLEAR',
+
   LIST_DELETE = 'LIST_DELETE',
+  LIST_DELETE_SUCCESS = 'LIST_DELETE_SUCCESS',
+  LIST_DELETE_FAIL = 'LIST_DELETE_FAIL',
+
   LIST_SELECT = 'LIST_SELECT',
 }
 
@@ -31,8 +35,20 @@ export interface ListSearchClearType {
   // payload: ListRequestConfig;
   payload: any;
 }
-
-
+export interface ListDeleteFailType {
+  type: ListActionTypes.LIST_DELETE_FAIL;
+  // payload: ListRequestConfig;
+  payload: any;
+}export interface ListDeleteSuccessType {
+  type: ListActionTypes.LIST_DELETE_SUCCESS;
+  // payload: ListRequestConfig;
+  payload: any;
+}
+export interface ListDeleteType {
+  type: ListActionTypes.LIST_DELETE;
+  // payload: ListRequestConfig;
+  payload: any;
+}
 export interface ListLoadType {
   type: ListActionTypes.LIST_LOAD;
   // payload: ListRequestConfig;
@@ -72,12 +88,12 @@ export interface Data {
   status: RequestStatus;
 }
 
-export type ListActionType = ListDeleteType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess | ListSearchClearType | ListSearchType;
+export type ListActionType = ListDeleteType | ListDeleteFailType | ListDeleteSuccessType | ListDeleteType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess | ListSearchClearType | ListSearchType;
 
 
 //actions
 // change params to differ list actions from one another
-export const listDelete = (id: string | number) => CreateAction(ListActionTypes.LIST_DELETE, id);
+export const listDelete = (config: ListRequestConfig) => CreateAction(ListActionTypes.LIST_DELETE, config);
 // change params to differ list actions from one another
 export const listSelect = (id: string | number) => CreateAction(ListActionTypes.LIST_SELECT, id);
 
@@ -91,7 +107,7 @@ export const loadListFail = (
 
 
 // sagas
-export function* workerSaga( action: ListActionType ) {
+export function* getSaga( action: ListActionType ) {
   try {
     const list = yield call(fetchList, action.payload as ListRequestConfig);
     yield put(loadSuccess({url: action.payload?.url, list}));
@@ -104,10 +120,19 @@ export function* workerSaga( action: ListActionType ) {
     }
   }
 }
+export function* deleteSaga(action: ListActionType) {
+  try {
+    const res = yield call(del, action.payload);
+    yield console.log(res)
+  } catch (error) {
+    yield console.log(error)
+  }
+}
 export function* watcherSaga() {
-  yield takeLatest(ListActionTypes.LIST_LOAD, workerSaga);
-  yield takeLatest(ListActionTypes.LIST_SEARCH, workerSaga);
-  yield takeLatest(ListActionTypes.LIST_SEARCH_CLEAR, workerSaga);
+  yield takeLatest(ListActionTypes.LIST_LOAD, getSaga);
+  yield takeLatest(ListActionTypes.LIST_SEARCH, getSaga);
+  yield takeLatest(ListActionTypes.LIST_DELETE, deleteSaga);
+  yield takeLatest(ListActionTypes.LIST_SEARCH_CLEAR, getSaga);
 }
 
 // reducer
@@ -169,12 +194,15 @@ export function InitReducer (listName: string) {
     if (type === ListActionTypes.LIST_SELECT) {
       return {...state, selected: payload as string | number}
     }
-    if (type === ListActionTypes.LIST_DELETE) {
-      return {
-        // TODO: implement delete
-        // data: state.data.filter()
-        ...state,
-        selected: null,
+
+    if (type === ListActionTypes.LIST_DELETE_SUCCESS) {
+      if (payload.url === listName) {
+        return {
+          // TODO: implement delete
+          // data: state.data.filter()
+          ...state,
+          // selected: null,
+        }
       }
     }
 

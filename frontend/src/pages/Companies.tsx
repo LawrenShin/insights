@@ -185,7 +185,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   loadMeta: () => dispatch(loadMeta()),
 
   selectCompany: (id: string | number) => dispatch(listSelect(id)),
-  deleteCompany: (id: string | number) => dispatch(listDelete(id)),
+  deleteCompany: (config: ListRequestConfig) => dispatch(listDelete(config)),
 });
 
 const connector = connect(

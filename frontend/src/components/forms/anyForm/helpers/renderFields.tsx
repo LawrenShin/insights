@@ -24,7 +24,7 @@ export const renderField = (
   externalKey?: string,
   customOnChange?: (values: any) => void,
 ): JSX.Element => {
-  if (key !== 'id') {
+  if (key !== 'isEditable' && !key.match(/^[\w+]+Id$|^id$/gi)) {
     const type = metaTypesMap.get(key)?.type;
     const displayName = metaTypesMap.get(key)?.displayName;
     const name = (index !== undefined) ? `${externalKey}.${key}.${index}` : key;

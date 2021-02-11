@@ -113,7 +113,7 @@ export const Search: React.FC<InputProps & SearchDispatchProps> = (
         clearTimeout(value);
         setValue(null);
       }
-      setValue(setTimeout(timeout, 2000, e.target.value))
+      setValue(setTimeout(timeout, 1000, e.target.value))
     }}
   />
 }

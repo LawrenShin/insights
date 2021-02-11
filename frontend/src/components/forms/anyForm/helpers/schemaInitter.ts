@@ -4,8 +4,7 @@ import {MetaFieldTypes} from "./valuesInitter";
 export const typeRenaming = (type: string, mode?: boolean): string => {
   if (type === MetaFieldTypes.Percentage) return mode ? type : 'string';
   if (type === MetaFieldTypes.DropDown) return mode ? type : 'string';
-  if (type === MetaFieldTypes.Float) return 'string';
-  if (type === MetaFieldTypes.Integer) return 'number';
+  if (type === MetaFieldTypes.Float || type === MetaFieldTypes.Integer) return 'number';
   return type;
 }
 
@@ -48,6 +47,10 @@ export const schemaInitter = (
         if (fieldTypeRenamed === MetaFieldTypes.Percentage) {
           fieldSchemaType = fieldSchemaType.min(0, 'At least 0').max(100, 'At max 100');
         }
+        // not sure how to differ int32 so for now just by hardcoding it
+        if (
+          key === 'healthTRI' || key === 'healthTRIR'
+        ) fieldSchemaType = fieldSchemaType.max(2147483647, 'Is there rly this many?')
 
         initSchema = {
           ...initSchema,

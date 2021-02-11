@@ -4,7 +4,7 @@ import {Avatar, Box, Chip, Typography} from "@material-ui/core";
 import { v4 as uuidv4} from 'uuid';
 import {Dispatch} from "redux";
 import useStyles from "./contentStyles";
-import {Data, ListRequestConfig, loadList} from "./listDuck";
+import {Data, listDelete, ListRequestConfig, loadList} from "./listDuck";
 import {RootState} from "../store/rootReducer";
 import {DictItem} from "./api/types";
 
@@ -25,6 +25,7 @@ interface StateProps {
 }
 interface DispatchProps {
   loadList: (config: ListRequestConfig) => void;
+  deletePerson: (config: ListRequestConfig) => void;
 }
 interface Props extends DispatchProps, StateProps{
   data: any;
@@ -63,6 +64,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => 
   if (entity) {
     // get name for person and place one instead of key on entity
     return Object.keys(entity).map((key, index) => {
+      if (key.match(/^[\w+]+Id$|^id$/gi)) return;
       let nameInsteadOfKey = null;
       let personCleared = null;
       // chip displays on name prop.
@@ -98,7 +100,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => 
 
 const Content = (props: Props) => {
   const styles = useStyles();
-  const {data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson} = props;
+  const {data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson} = props;
 
   const [tab, setTab] = useState<Tabs>(Tabs.CONTENT);
 
@@ -114,7 +116,10 @@ const Content = (props: Props) => {
     color="primary"
     clickable
     onClick={() => setSelectedPerson(entity)}
-    onDelete={() => console.log(entity)}
+    onDelete={() => {
+      deletePerson({url: 'people', params: `id=${entity.id}`})
+      // console.log(entity, data.id)
+    }}
   />
   const renderGoBack = () => <button
     className={styles.backButton}
@@ -155,12 +160,12 @@ const Content = (props: Props) => {
 
         {tab === Tabs.EXECUTIVES && <>
           {renderGoBack()}
-          {renderFields(executives, dicts, renderChip, styles)}
+          {executives.length ?renderFields(executives, dicts, renderChip, styles) : <h5>No Executives were added</h5>}
         </>}
 
         {tab === Tabs.BOARDS && <>
           {renderGoBack()}
-          {renderFields(boards, dicts, renderChip, styles)}
+          {boards.length ? renderFields(boards, dicts, renderChip, styles) : <h5>No Boards were added</h5>}
         </>}
       </Box> : 'No Dicts'}
     </Box>
@@ -175,5 +180,6 @@ export default connect(
   }),
   (dispatch: Dispatch) => ({
     loadList: (config: ListRequestConfig) => dispatch(loadList(config)),
+    deletePerson: (config: ListRequestConfig) => dispatch(listDelete(config)),
   })
 )(Content);
