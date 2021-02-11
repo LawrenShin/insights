@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const Loader = (props: any) => {
   const classes = useStyles();
   return (
-    <div className={`${classes.centerLoader} ${props.styles}`}>
-      <CircularProgress />
+    <div className={`${classes.centerLoader}`}>
+      <CircularProgress size={props.size} className={props.styles} />
     </div>
   )
 }

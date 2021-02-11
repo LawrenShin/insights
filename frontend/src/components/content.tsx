@@ -7,6 +7,7 @@ import useStyles from "./contentStyles";
 import {Data, listDelete, ListRequestConfig, loadList} from "./listDuck";
 import {RootState} from "../store/rootReducer";
 import {DictItem} from "./api/types";
+import Loader from "./loader";
 
 enum Roles {
   EXECUTIVES = 1,
@@ -103,6 +104,7 @@ const Content = (props: Props) => {
   const {data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson} = props;
 
   const [tab, setTab] = useState<Tabs>(Tabs.CONTENT);
+  const [clickedChip, setClickedChip] = useState<string>('');
 
   const filterByRoles = <T extends unknown>(people: T[], role: Roles):T[] =>
     people.filter((person: any) => person.role.roleType === role || person.role.roleType === Roles.BOTH);
@@ -111,14 +113,18 @@ const Content = (props: Props) => {
   const boards = useMemo(() => filterByRoles(data.people, Roles.BOARD), [data.people, Roles.BOARD]);
 
   const renderChip = (name: string, entity: any) => <Chip
-    avatar={<Avatar>{name[0]}</Avatar>}
+    avatar={
+      clickedChip === name ?
+        <Loader size={20} styles={styles.loaderForChip} /> :
+          <Avatar>{name[0]}</Avatar>
+    }
     label={name}
     color="primary"
     clickable
     onClick={() => setSelectedPerson(entity)}
     onDelete={() => {
-      deletePerson({url: 'people', params: `id=${entity.id}`})
-      // console.log(entity, data.id)
+      setClickedChip(name);
+      deletePerson({ url: 'people', params: `id=${entity.id}` });
     }}
   />
   const renderGoBack = () => <button

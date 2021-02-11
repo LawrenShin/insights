@@ -24,7 +24,7 @@ const CompanyListItem = (company: ListItemType, handlers: any): JSX.Element => {
         <IconButton
           edge="end"
           aria-label="delete"
-          onClick={() => handlers.deleteCompany({url: 'company', params: `id=${company.id}`})}
+          onClick={() => handlers.deleteCompany({url: 'companies', params: `id=${company.id}`})}
         >
           <DeleteIcon />
         </IconButton>

@@ -80,15 +80,23 @@ export interface ListSelectType {
 
 export interface ListStateType {
   data: Data;
-  selected: string | number | null;
+  selected: any;
 }
 export interface Data {
-  data: ListItemType[] | null;
+  data: Response | null;
   error: null | string;
   status: RequestStatus;
 }
+interface Response {
+  companies: ListItemType[] | [],
+  pagination: {
+    pageIndex: number,
+    pageSize: number,
+    pageCount: number,
+  }
+}
 
-export type ListActionType = ListDeleteType | ListDeleteFailType | ListDeleteSuccessType | ListDeleteType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess | ListSearchClearType | ListSearchType;
+export type ListActionType = ListDeleteType | ListDeleteFailType | ListDeleteSuccessType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess | ListSearchClearType | ListSearchType;
 
 
 //actions
@@ -123,9 +131,16 @@ export function* getSaga( action: ListActionType ) {
 export function* deleteSaga(action: ListActionType) {
   try {
     const res = yield call(del, action.payload);
-    yield console.log(res)
+    const resolved = yield Promise.resolve(res.json());
+    yield put(CreateAction(
+      ListActionTypes.LIST_DELETE_SUCCESS,
+      {
+        url: action.payload.url,
+        id: resolved.id
+      }));
   } catch (error) {
-    yield console.log(error)
+    yield console.log(error.message)
+    yield put(CreateAction(ListActionTypes.LIST_DELETE_FAIL, error));
   }
 }
 export function* watcherSaga() {
@@ -176,7 +191,7 @@ export function InitReducer (listName: string) {
           ...state,
         data: {
           ...state.data,
-          data: action.payload.list as ListItemType[],
+          data: action.payload.list,
           status: RequestStatus.STILL,
         }
       }
@@ -195,13 +210,40 @@ export function InitReducer (listName: string) {
       return {...state, selected: payload as string | number}
     }
 
+    if (type === ListActionTypes.LIST_DELETE && listName === payload.url) {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          status: RequestStatus.LOADING,
+        },
+        // selected: payload.url === 'people' ? payload.par
+      }
+    }
+
     if (type === ListActionTypes.LIST_DELETE_SUCCESS) {
-      if (payload.url === listName) {
+      // oh god need to unify in future
+      if (payload.url === 'companies' && state.data.data?.companies) {
         return {
-          // TODO: implement delete
-          // data: state.data.filter()
           ...state,
-          // selected: null,
+          data: {
+            ...state.data,
+            data: {
+              ...state.data.data,
+              companies: state.data.data.companies.filter((company: any) => company.id !== payload.id),
+            },
+            status: RequestStatus.STILL,
+          },
+          selected: null,
+        }
+      }
+      if (payload.url === 'people' && listName === 'companies') {
+        return {
+          ...state,
+          selected: {
+            ...state.selected,
+            people: state.selected.people.filter((person: any) => person.id !== payload.id),
+          }
         }
       }
     }

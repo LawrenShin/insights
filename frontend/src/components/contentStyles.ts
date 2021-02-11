@@ -32,6 +32,10 @@ export default makeStyles(
       position: 'fixed',
       bottom: 0,
       right: '50px',
+    },
+    loaderForChip: {
+      color: 'white',
+      marginLeft: '5px',
     }
   })
 );
