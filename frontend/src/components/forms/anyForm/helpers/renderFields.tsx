@@ -86,8 +86,9 @@ export const renderField = (
     if (type === MetaFieldTypes.DropDown) {
       return <Fields.Select {...props}>
         {
+          // TODO: refactor
           // @ts-ignore
-          dicts[key]?.map(
+          dicts[key === 'highEducation' ? 'educationLevel' : key]?.map(
             (option: Country | DictItem) => <option value={option.id}>{option.name}</option>
           )
         }

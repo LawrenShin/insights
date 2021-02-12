@@ -17,6 +17,7 @@ interface DispatchProps {
 }
 
 interface OwnProps {
+  companyId: number | null;
   existingValues: any;
   handleClose: () => void;
   formName: string;
@@ -45,7 +46,7 @@ const handleSubmit = (values: any, meta: any, dispatcher?: any) => {
 }
 
 const AnyFormBag = ({
-  formName,
+  companyId, formName,
   meta, dicts, existingValues,
   handleClose, initForm, submitForm,
 }: Props) => {
@@ -84,7 +85,11 @@ const AnyFormBag = ({
               console.log(values, 'submit');
               submitForm({
                 formName,
-                data: handleSubmit(values, entity),
+                // TODO: refactor
+                data: handleSubmit(
+                  formName === 'person' ? {...values, companyId} : values,
+                  entity
+                ),
               });
             }}
           />

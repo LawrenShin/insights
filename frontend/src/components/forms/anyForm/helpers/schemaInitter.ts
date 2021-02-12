@@ -27,7 +27,7 @@ export const schemaInitter = (
       allowsNull,
       isEditable,
     } = meta[key];
-    if (key !== 'id' && isEditable) {
+    if (key !== 'id' && isEditable && !key.match(/^[\w+]+Id$|^id$/gi)) {
       if (fieldType !== MetaFieldTypes.NestedEntity) {
 
         const fieldTypeRenamed = typeRenaming(fieldType.toLowerCase(), true);
@@ -50,7 +50,14 @@ export const schemaInitter = (
         // not sure how to differ int32 so for now just by hardcoding it
         if (
           key === 'healthTRI' || key === 'healthTRIR'
-        ) fieldSchemaType = fieldSchemaType.max(2147483647, 'Is there rly this many?')
+        ) fieldSchemaType = fieldSchemaType.max(2147483647, 'Is there rly this many?');
+        if (key === 'yearOfBirth') {
+          const currentYear = new Date().getFullYear();
+          const message = 'Shouldn\'t be any';
+          fieldSchemaType = fieldSchemaType
+            .max(currentYear - 18, `${message} younger`)
+            .min(currentYear - 130, `${message} older` );
+        }
 
         initSchema = {
           ...initSchema,

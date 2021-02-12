@@ -145,6 +145,7 @@ const Companies = (props: any) => {
       />}
 
       {(meta && showForm !== FormModes.HIDDEN) && <AnyFormBag
+        companyId={company.id || null}
         formName={formName}
         handleClose={() => setShowForm(FormModes.HIDDEN)}
         existingValues={showForm === FormModes.EDIT ? getExistingValues() : null}
