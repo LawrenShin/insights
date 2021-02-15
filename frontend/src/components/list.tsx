@@ -18,6 +18,7 @@ interface Props {
   pagination: () => JSX.Element;
   callForm: () => JSX.Element;
   search: (disabled: boolean) => JSX.Element;
+  accessRights: string[] | [];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,10 +49,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function generate(elementGen: ListItemTypeGen, data: ListItemType[], elementClick: any) {
+function generate(elementGen: ListItemTypeGen, data: ListItemType[], elementClick: any, accessRights: string[] | []) {
 
   return data.map((value, i): React.ReactElement => {
-    return React.cloneElement(elementGen(value, elementClick), {
+    return React.cloneElement(elementGen(value, elementClick, accessRights), {
       key: uuidv4(),
       style: {
         marginBottom: i === data.length - 1 ? '40px' : 0,
@@ -63,7 +64,7 @@ function generate(elementGen: ListItemTypeGen, data: ListItemType[], elementClic
 
 export default function ListComponent (props: Props) {
   const classes = useStyles();
-  const {title, data, elementGen, elementClick, status, metaStatus, callForm, search} = props;
+  const {title, data, elementGen, elementClick, status, metaStatus, callForm, search, accessRights} = props;
 
   return (
     <Box className={classes.root}>
@@ -83,7 +84,7 @@ export default function ListComponent (props: Props) {
               status === RequestStatus.LOADING ?
               <Loader />
                 :
-              data && generate(elementGen, data, elementClick)
+              data && generate(elementGen, data, elementClick, accessRights)
             }
           </List>
         </div>

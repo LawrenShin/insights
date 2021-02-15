@@ -1,13 +1,15 @@
 import {call, put, takeEvery} from 'redux-saga/effects';
-import {Creds, FetchTokenAction, Token, TokenActionTypes} from "./types";
+import {Creds, FetchTokenAction, LogoutAction, Token, TokenActionTypes} from "./types";
 import {RequestStatus} from "../api/types";
 import {fetchToken} from "../api";
 import {CreateAction} from "../../store/action";
 
-const outtaStorage = localStorage.getItem('token');
+const outtaStorageToken = localStorage.getItem('token');
+const outtaStorageAccessRights = localStorage.getItem('accessRights')?.split(',');
 
 const initState = {
-  token: outtaStorage || '',
+  token: outtaStorageToken || '',
+  accessRights: outtaStorageAccessRights || [],
   error: null,
   status: RequestStatus.STILL,
 }
@@ -27,21 +29,33 @@ export function* watcherSaga() {
 }
 
 
-export function Reducer (state: Token = initState, action: FetchTokenAction) {
+export function Reducer (state: Token = initState, action: FetchTokenAction | LogoutAction) {
   if (action.type === TokenActionTypes.FETCH_TOKEN)
     return {...state, status: RequestStatus.LOADING};
 
   if (action.type === TokenActionTypes.FETCH_TOKEN_SUCCESS) {
     localStorage.setItem('token', action.payload.token);
+    localStorage.setItem('accessRights', action.payload.accessRights.join(','));
     return {
       ...state,
       status: RequestStatus.STILL,
       token: action.payload.token,
+      accessRights: action.payload.accessRights,
     }
   }
 
   if (action.type === TokenActionTypes.FETCH_TOKEN_FAIL)
     return {...state, status: RequestStatus.FAIL, error: action.payload.error}
+
+  if (action.type === TokenActionTypes.LOGOUT) {
+    localStorage.clear();
+    return {
+      token: '',
+      accessRights: [],
+      error: null,
+      status: RequestStatus.STILL,
+    }
+  }
 
   return state;
 }

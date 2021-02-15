@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, Form, Formik} from "formik";
+import {Form, Formik} from "formik";
 import * as Yup from 'yup';
 import useStyles from './styles';
-import {MetaFieldTypes, valuesInitter} from "./helpers/valuesInitter";
+import {MetaFieldTypes} from "./helpers/valuesInitter";
 import {MetaMapType} from "./helpers/metaFlatMap";
 import {Dictionaries, RequestStatus} from "../../api/types";
 import {renderField} from "./helpers/renderFields";
@@ -12,8 +12,6 @@ import {Tooltip} from "@material-ui/core";
 import {RootState} from "../../../store/rootReducer";
 import {AnyFormType} from "./anyFormDuck";
 import Loader from '../../loader';
-import Sub from "./sub";
-import {schemaInitter} from "./helpers/schemaInitter";
 
 export interface InitialValuesType {
   [key: string]: string | number | null | string[] | number[] | boolean | {};
@@ -53,7 +51,7 @@ const AnyForm = ({
   initialValues,
 }: Props & StateProps) => {
   const [tab, setTab] = useState<Tabs>(Tabs.FIELDS);
-  const [forArrays, setForArrays] = useState({});
+  // const [forArrays, setForArrays] = useState({});
   const classes = useStyles();
 
   return (
@@ -95,8 +93,8 @@ const AnyForm = ({
             {
               Object.keys(entity).map((key) => {
                 const fieldTypeIsNested = entity[key].fieldType === MetaFieldTypes.NestedEntity;
-                const fieldTypeIsArr = entity[key].fieldType.toLowerCase() === MetaFieldTypes.Array;
-                const renderArrRelated = fieldTypeIsArr && tab === Tabs.ARRAYS;
+                // const fieldTypeIsArr = entity[key].fieldType.toLowerCase() === MetaFieldTypes.Array;
+                // const renderArrRelated = fieldTypeIsArr && tab === Tabs.ARRAYS;
 
                 if (!fieldTypeIsNested && tab !== Tabs.ARRAYS) {
                   return <>
@@ -225,7 +223,7 @@ const AnyForm = ({
               <button
                 type="reset"
                 onClick={handleClose}
-              >Cancel</button>
+              >Close</button>
               {
                 form.status === RequestStatus.LOADING ?
                   <Loader styles={classes.loader} /> : <button type="submit">Submit</button>

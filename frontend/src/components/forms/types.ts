@@ -1,6 +1,7 @@
 import {RequestStatus} from "../api/types";
 
 export enum TokenActionTypes {
+  LOGOUT = 'LOGOUT',
   FETCH_TOKEN = 'FETCH_TOKEN',
   FETCH_TOKEN_FAIL = 'FETCH_TOKEN_FAIL',
   FETCH_TOKEN_SUCCESS = 'FETCH_TOKEN_SUCCESS',
@@ -12,7 +13,8 @@ export interface Creds {
 }
 export interface Token {
   token: string;
-  error: null | object | string;
+  accessRights: string[];
+  error?: null | object | string;
   status: RequestStatus;
 }
 
@@ -27,6 +29,9 @@ export interface FetchTokenSuccess {
 export interface FetchTokenFail {
   type: TokenActionTypes.FETCH_TOKEN_FAIL;
   payload: Token;
+}
+export interface LogoutAction {
+  type: TokenActionTypes.LOGOUT;
 }
 
 export type FetchTokenAction = FetchToken | FetchTokenSuccess | FetchTokenFail;

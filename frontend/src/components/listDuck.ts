@@ -3,6 +3,9 @@ import {CreateAction} from "../store/action";
 import {RequestStatus} from "../components/api/types";
 import {call, put, takeLatest} from "redux-saga/effects";
 import {del, fetchList} from "./api";
+import {AnyFormActionTypes} from "./forms/anyForm/anyFormDuck";
+import {TokenActionTypes} from "./forms/types";
+
 
 // types
 export enum ListActionTypes {
@@ -17,6 +20,8 @@ export enum ListActionTypes {
   LIST_DELETE_SUCCESS = 'LIST_DELETE_SUCCESS',
   LIST_DELETE_FAIL = 'LIST_DELETE_FAIL',
 
+  LIST_UPDATE = 'LIST_UPDATE',
+
   LIST_SELECT = 'LIST_SELECT',
 }
 
@@ -28,6 +33,10 @@ export interface ListRequestConfig {
 export interface ListSearchType {
   type: ListActionTypes.LIST_SEARCH;
   // payload: ListRequestConfig;
+  payload: any;
+}
+export interface ListUpdateType {
+  type: ListActionTypes.LIST_UPDATE;
   payload: any;
 }
 export interface ListSearchClearType {
@@ -77,6 +86,10 @@ export interface ListSelectType {
   // payload: string | number;
   payload: any;
 }
+export interface ListAnyFormUpdate {
+  type: AnyFormActionTypes.ANY_FORM_UPDATE;
+  payload: any;
+}
 
 export interface ListStateType {
   data: Data;
@@ -88,15 +101,15 @@ export interface Data {
   status: RequestStatus;
 }
 interface Response {
-  companies: ListItemType[] | [],
-  pagination: {
+  companies?: any[] | [],
+  pagination?: {
     pageIndex: number,
     pageSize: number,
     pageCount: number,
   }
 }
 
-export type ListActionType = ListDeleteType | ListDeleteFailType | ListDeleteSuccessType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess | ListSearchClearType | ListSearchType;
+export type ListActionType = ListUpdateType | ListAnyFormUpdate | ListDeleteType | ListDeleteFailType | ListDeleteSuccessType | ListSelectType | ListLoadType | ListLoadTypeFail | ListLoadTypeSuccess | ListSearchClearType | ListSearchType;
 
 
 //actions
@@ -104,6 +117,8 @@ export type ListActionType = ListDeleteType | ListDeleteFailType | ListDeleteSuc
 export const listDelete = (config: ListRequestConfig) => CreateAction(ListActionTypes.LIST_DELETE, config);
 // change params to differ list actions from one another
 export const listSelect = (id: string | number) => CreateAction(ListActionTypes.LIST_SELECT, id);
+
+export const logout = () => CreateAction(TokenActionTypes.LOGOUT);
 
 export const loadList = (config: ListRequestConfig) => CreateAction(ListActionTypes.LIST_LOAD, config);
 export const loadSuccess = (data: { url: string, list: ListItemType[] }) => CreateAction(ListActionTypes.LIST_LOAD_SUCCESS, data);
@@ -113,6 +128,9 @@ export const loadListFail = (
     error: string | number,
   }) => CreateAction(ListActionTypes.LIST_LOAD_FAIL, payload);
 
+// selectors
+export const getPagination = (state: ListStateType) => state.data.data?.pagination;
+
 
 // sagas
 export function* getSaga( action: ListActionType ) {
@@ -121,10 +139,14 @@ export function* getSaga( action: ListActionType ) {
     yield put(loadSuccess({url: action.payload?.url, list}));
   } catch (error) {
     if (action.payload.hasOwnProperty('url')) {
-      yield put(loadListFail({
-        url: action.payload.url,
-        error: error.status === 403 ? error.status : error.message,
-      }))
+      if (error.status !== 403) {
+        yield put(loadListFail({
+          url: action.payload.url,
+          error: error.message,
+        }))
+      }
+      // TODO: better have an interceptor for this
+      yield put(logout());
     }
   }
 }
@@ -138,8 +160,10 @@ export function* deleteSaga(action: ListActionType) {
         url: action.payload.url,
         id: resolved.id
       }));
+  //  TODO: delete element from selected arr if person and call company by id to update it in companies list
+  //  TODO: If company were deleted, clear selected and remove it from array of companies
   } catch (error) {
-    yield console.log(error.message)
+    yield console.log(error.message);
     yield put(CreateAction(ListActionTypes.LIST_DELETE_FAIL, error));
   }
 }
@@ -221,8 +245,11 @@ export function InitReducer (listName: string) {
       }
     }
 
-    if (type === ListActionTypes.LIST_DELETE_SUCCESS) {
-      // oh god need to unify in future
+    // TODO: oh god need to unify in future
+    // TODO: needs refactor
+    if (type === ListActionTypes.LIST_DELETE_SUCCESS || type === ListActionTypes.LIST_UPDATE) {
+      const isUpdate = type === ListActionTypes.LIST_UPDATE;
+
       if (payload.url === 'companies' && state.data.data?.companies) {
         return {
           ...state,
@@ -230,7 +257,10 @@ export function InitReducer (listName: string) {
             ...state.data,
             data: {
               ...state.data.data,
-              companies: state.data.data.companies.filter((company: any) => company.id !== payload.id),
+              companies: isUpdate ?
+                [...state.data.data.companies, action.payload.data]
+              :
+                state.data.data.companies.filter((company: any) => company.id !== payload.id),
             },
             status: RequestStatus.STILL,
           },
@@ -238,11 +268,27 @@ export function InitReducer (listName: string) {
         }
       }
       if (payload.url === 'people' && listName === 'companies') {
+        const newPeople = isUpdate ?
+          [...state.selected.people, action.payload.data]
+          :
+          state.selected.people.filter((person: any) => person.id !== payload.id);
+
         return {
           ...state,
+          data: {
+            ...state.data,
+            data: {
+              ...state.data.data,
+              // @ts-ignore
+              companies: state.data.data?.companies?.map((company: any) => {
+                if (company.id === state.selected.id) return {...company, people: newPeople}
+                return company;
+              })
+            },
+          },
           selected: {
             ...state.selected,
-            people: state.selected.people.filter((person: any) => person.id !== payload.id),
+            people: newPeople,
           }
         }
       }

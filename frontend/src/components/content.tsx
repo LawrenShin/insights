@@ -1,6 +1,6 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import { connect } from 'react-redux';
-import {Avatar, Box, Chip, Typography} from "@material-ui/core";
+import {Avatar, Box, Chip, IconButton, Typography} from "@material-ui/core";
 import { v4 as uuidv4} from 'uuid';
 import {Dispatch} from "redux";
 import useStyles from "./contentStyles";
@@ -22,7 +22,8 @@ enum Tabs {
 }
 
 interface StateProps {
-  dicts: any,
+  accessRights: string[] | [];
+  dicts: any;
 }
 interface DispatchProps {
   loadList: (config: ListRequestConfig) => void;
@@ -101,16 +102,21 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => 
 
 const Content = (props: Props) => {
   const styles = useStyles();
-  const {data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson} = props;
+  const {data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson, accessRights} = props;
 
   const [tab, setTab] = useState<Tabs>(Tabs.CONTENT);
   const [clickedChip, setClickedChip] = useState<string>('');
+  const [executives, setExecutives] = useState<any[]>([]);
+  const [boards, setBoards] = useState<any[]>([]);
 
   const filterByRoles = <T extends unknown>(people: T[], role: Roles):T[] =>
     people.filter((person: any) => person.role.roleType === role || person.role.roleType === Roles.BOTH);
 
-  const executives = useMemo(() => filterByRoles(data.people, Roles.EXECUTIVES), [data.people, Roles.EXECUTIVES]);
-  const boards = useMemo(() => filterByRoles(data.people, Roles.BOARD), [data.people, Roles.BOARD]);
+  useEffect(() => {
+    setExecutives(filterByRoles(data.people, Roles.EXECUTIVES))
+    setBoards(filterByRoles(data.people, Roles.BOARD))
+  }, [data, data.people]);
+
 
   const renderChip = (name: string, entity: any) => <Chip
     avatar={
@@ -121,6 +127,7 @@ const Content = (props: Props) => {
     label={name}
     color="primary"
     clickable
+    disabled={!accessRights.filter((el: string) => el === 'DeletePeople').length}
     onClick={() => setSelectedPerson(entity)}
     onDelete={() => {
       setClickedChip(name);
@@ -141,6 +148,12 @@ const Content = (props: Props) => {
           <Typography variant={'h4'}>
             {title}
           </Typography>
+        </Box>
+        <Box>
+          <button
+            type={'button'}
+            onClick={() => setTab(Tabs.CONTENT)}
+          >Content</button>
         </Box>
         <Box>
           <button
@@ -181,8 +194,10 @@ const Content = (props: Props) => {
 export default connect(
   ({
     DictsReducer: {data: {dicts}},
+    SignInReducer: {accessRights},
   }: RootState) => ({
     dicts,
+    accessRights,
   }),
   (dispatch: Dispatch) => ({
     loadList: (config: ListRequestConfig) => dispatch(loadList(config)),

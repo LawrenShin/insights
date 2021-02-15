@@ -2,6 +2,7 @@ import {RequestStatus} from "../../api/types";
 import {call, put, takeEvery} from "redux-saga/effects";
 import {anyFormApi} from "../../api";
 import {CreateAction} from "../../../store/action";
+import {ListActionTypes} from "../../listDuck";
 
 
 export interface AnyFormState {
@@ -18,6 +19,7 @@ export enum AnyFormActionTypes {
   ANY_FORM_SUBMIT = 'ANY_FORM_SUBMIT',
   ANY_FORM_FAIL = 'ANY_FORM_FAIL',
   ANY_FORM_SUCCESS = 'ANY_FORM_SUCCESS',
+  ANY_FORM_UPDATE = 'ANY_FORM_UPDATE',
 }
 export interface AnyFormActionPayload {
   formName: string;
@@ -37,14 +39,24 @@ const initState = {
 function* workerSaga(action: SubmitAnyFormAction) {
   try {
     const res = yield call(anyFormApi, action.payload.data, action.payload.formName);
+    // const resolved = yield Promise.resolve(res.json());
     yield put(
       CreateAction(
         AnyFormActionTypes.ANY_FORM_SUCCESS,
         {
           formName: action.payload.formName,
-          status: RequestStatus.STILL,
         })
     );
+    // Confusing updates
+    yield put(
+      CreateAction(
+        ListActionTypes.LIST_UPDATE,
+        {
+          url: action.payload.formName === 'person' ? 'people' : 'companies',
+          data: {...res},
+        }
+      )
+    )
   } catch (error) {
     yield put(
       CreateAction(AnyFormActionTypes.ANY_FORM_FAIL, {
@@ -84,7 +96,6 @@ export function Reducer (state: AnyFormState = initState, action: SubmitAnyFormA
   }
 
   if (action.type === AnyFormActionTypes.ANY_FORM_FAIL) {
-    console.log(action.type, action)
     return {
       ...state,
       forms: state.forms.map((form) =>

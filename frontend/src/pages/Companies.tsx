@@ -22,7 +22,7 @@ import {ConnectedSearch} from "../components/fields";
 const Companies = (props: any) => {
   const {
     data: companiesData, selected: company,
-    meta, dicts, dictsMetaStatus, dictsMetaError, status: metaStatus,
+    meta, dicts, dictsMetaStatus, dictsMetaError, status: metaStatus, accessRights,
     selectCompany, deleteCompany, loadList, loadDicts, loadMeta
   } = props;
 
@@ -77,6 +77,7 @@ const Companies = (props: any) => {
     <Box display={'flex'} height={'fit-content'} minHeight={'100vh'}>
       <ListComponent
         data={companiesData.data?.companies}
+        accessRights={accessRights}
         status={companiesData.status}
         metaStatus={metaStatus}
         elementGen={CompanyListItem}
@@ -145,7 +146,7 @@ const Companies = (props: any) => {
       />}
 
       {(meta && showForm !== FormModes.HIDDEN) && <AnyFormBag
-        companyId={company.id || null}
+        companyId={company === null ? company : company.id}
         formName={formName}
         handleClose={() => setShowForm(FormModes.HIDDEN)}
         existingValues={showForm === FormModes.EDIT ? getExistingValues() : null}
@@ -169,6 +170,7 @@ const mapStateToProps = (
       status: dictsMetaStatus,
       error: dictsMetaError,
     },
+    SignInReducer: {accessRights}
   }: RootState
 ) => ({
   data,
@@ -176,6 +178,7 @@ const mapStateToProps = (
   dicts,
   dictsMetaStatus,
   dictsMetaError,
+  accessRights,
   selected,
 });
 

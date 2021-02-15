@@ -20,6 +20,10 @@ export interface CompanyHandlers {
   delete: (id: string | number) => void;
 }
 
-export type CompanyListItemGenType = (Company: ListItemType, handlers: CompanyHandlers) => JSX.Element;
+export type CompanyListItemGenType = (
+  Company: ListItemType,
+  handlers: CompanyHandlers,
+  accessRights: string[] | []
+) => JSX.Element;
 
 export type ListItemTypeGen = CompanyListItemGenType;
