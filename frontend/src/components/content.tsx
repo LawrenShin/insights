@@ -44,10 +44,15 @@ const renderField = (element: any, fieldName: string, dicts: any, renderChip: an
   if (typeof element === 'boolean') {
     return <span>{element ? 'Yes' : 'No'}</span>
   }
-  if (typeof element !== 'object' && element && !Array.isArray(element)) {
-    const value = dicts[fieldName] ?
-      dicts[fieldName].filter((dictElement: DictItem) => dictElement.id === element)[0] : element
-    return <span>{typeof value === 'object' ? value.name : value}</span>
+  const renamedField = fieldName === 'highEducation' ? 'educationLevel' : fieldName;
+  if (typeof element === 'number' && dicts[renamedField]) {
+    // TODO: refactor this renaming
+    const value = dicts[renamedField]
+      .filter((dictElement: DictItem) => dictElement.id === element)[0];
+    return <span>{value.name}</span>
+  }
+  if ((typeof element !== 'object' && element && !Array.isArray(element))) {
+    return <span>{element}</span>
   }
   if (Array.isArray(element)) {
     return element.length ? <div style={{marginLeft: '20px'}}>
@@ -72,6 +77,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
       let nameInsteadOfKey = null;
       let personCleared = null;
       // chip displays on name prop.
+      // clear from indexes in names on array entities like people
       if (typeof +key === 'number' && (entity[key]?.name)) {
         const {name, title, ...rest} = entity[key];
         nameInsteadOfKey = entity[key]?.name;
@@ -90,6 +96,8 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
               renderChip(nameInsteadOfKey, entity[key])
               :
               // meta[key]?.displayName ? `${meta[key]?.displayName}: ` : `${key[0].toUpperCase()}${key.substr(1, key.length)}`
+              // undefined in DI DUE TO di - meta, dI - data
+              // undefined in country due ti no display name for iso and rext
               `${meta[key]?.displayName}: `
             }<br/>
           </span>
