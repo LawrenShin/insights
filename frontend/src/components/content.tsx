@@ -1,10 +1,10 @@
-import React, {useState, useMemo, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import { connect } from 'react-redux';
-import {Avatar, Box, Chip, IconButton, Typography} from "@material-ui/core";
+import {Avatar, Box, Chip, Typography} from "@material-ui/core";
 import { v4 as uuidv4} from 'uuid';
 import {Dispatch} from "redux";
 import useStyles from "./contentStyles";
-import {Data, listDelete, ListRequestConfig, loadList} from "./listDuck";
+import {listDelete, ListRequestConfig, loadList} from "./listDuck";
 import {RootState} from "../store/rootReducer";
 import {DictItem} from "./api/types";
 import Loader from "./loader";
@@ -24,6 +24,7 @@ enum Tabs {
 interface StateProps {
   accessRights: string[] | [];
   dicts: any;
+  meta: any;
 }
 interface DispatchProps {
   loadList: (config: ListRequestConfig) => void;
@@ -37,8 +38,9 @@ interface Props extends DispatchProps, StateProps{
   callCompanyForm: () => JSX.Element;
 }
 
+
 // differ fields by types
-const renderField = (element: any, fieldName: string, dicts: any, renderChip: any, styles: any) => {
+const renderField = (element: any, fieldName: string, dicts: any, renderChip: any, styles: any, meta?: any) => {
   if (typeof element === 'boolean') {
     return <span>{element ? 'Yes' : 'No'}</span>
   }
@@ -50,19 +52,19 @@ const renderField = (element: any, fieldName: string, dicts: any, renderChip: an
   if (Array.isArray(element)) {
     return element.length ? <div style={{marginLeft: '20px'}}>
       {element.map((el: any) => <div>
-        {renderFields(el, dicts, renderChip, styles)}
+        {renderFields(el, dicts, renderChip, styles, meta)}
       </div>)}
     </div> : 'Empty';
   }
   if (typeof element === 'object') {
     if (element === null) return 'No data';
     return <div style={{marginLeft: '20px'}}>
-      {renderFields(element, dicts, renderChip, styles)}
+      {renderFields(element, dicts, renderChip, styles, meta)}
     </div>
   }
 }
 
-const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => {
+const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, meta?: any) => {
   if (entity) {
     // get name for person and place one instead of key on entity
     return Object.keys(entity).map((key, index) => {
@@ -75,7 +77,6 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => 
         nameInsteadOfKey = entity[key]?.name;
         personCleared = rest
       }
-
       if (key !== 'people' && key !== 'roles') {
         return <div
           style={{
@@ -88,10 +89,17 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => 
             {nameInsteadOfKey ?
               renderChip(nameInsteadOfKey, entity[key])
               :
-              `${key[0].toUpperCase()}${key.substr(1, key.length)}: `
-            }
+              `${meta[key]?.displayName || key[0].toUpperCase()}${key.substr(1, key.length)}: `
+            }<br/>
           </span>
-          {renderField(personCleared || entity[key], key, dicts, renderChip, styles)}
+          {renderField(
+            personCleared || entity[key],
+            key,
+            dicts,
+            renderChip,
+            styles,
+            meta[key]?.fieldType === 'NestedEntity' ? meta[key].meta : meta
+          )}
         </div>
       }
     });
@@ -102,7 +110,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any) => 
 
 const Content = (props: Props) => {
   const styles = useStyles();
-  const {data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson, accessRights} = props;
+  const {meta, data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson, accessRights} = props;
 
   const [tab, setTab] = useState<Tabs>(Tabs.CONTENT);
   const [clickedChip, setClickedChip] = useState<string>('');
@@ -175,28 +183,29 @@ const Content = (props: Props) => {
         </Box>
       </Box>
       {dicts ? <Box>
-        {tab === Tabs.CONTENT && renderFields(data, dicts, renderChip, styles)}
+        {tab === Tabs.CONTENT && renderFields(data, dicts, renderChip, styles, meta.company)}
 
         {tab === Tabs.EXECUTIVES && <>
           {renderGoBack()}
-          {executives.length ?renderFields(executives, dicts, renderChip, styles) : <h5>No Executives were added</h5>}
+          {executives.length ?renderFields(executives, dicts, renderChip, styles, meta.person) : <h5>No Executives were added</h5>}
         </>}
 
         {tab === Tabs.BOARDS && <>
           {renderGoBack()}
-          {boards.length ? renderFields(boards, dicts, renderChip, styles) : <h5>No Boards were added</h5>}
+          {boards.length ? renderFields(boards, dicts, renderChip, styles, meta.person) : <h5>No Boards were added</h5>}
         </>}
-      </Box> : 'No Dicts'}
+      </Box> : <Loader />}
     </Box>
   )
 }
 
 export default connect(
   ({
-    DictsReducer: {data: {dicts}},
+    DictsReducer: {data: {dicts, meta}},
     SignInReducer: {accessRights},
   }: RootState) => ({
     dicts,
+    meta,
     accessRights,
   }),
   (dispatch: Dispatch) => ({
