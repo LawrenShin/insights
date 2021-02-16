@@ -89,7 +89,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
             {nameInsteadOfKey ?
               renderChip(nameInsteadOfKey, entity[key])
               :
-              `${meta[key]?.displayName || key[0].toUpperCase()}${key.substr(1, key.length)}: `
+              meta[key]?.displayName ? `${meta[key]?.displayName}: ` : `${key[0].toUpperCase()}${key.substr(1, key.length)}`
             }<br/>
           </span>
           {renderField(
@@ -182,7 +182,7 @@ const Content = (props: Props) => {
           {callCompanyForm()}
         </Box>
       </Box>
-      {dicts ? <Box>
+      {(dicts && meta) ? <Box>
         {tab === Tabs.CONTENT && renderFields(data, dicts, renderChip, styles, meta.company)}
 
         {tab === Tabs.EXECUTIVES && <>

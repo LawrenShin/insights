@@ -5,7 +5,7 @@ import {ListItemType} from "./types";
 import BusinessIcon from '@material-ui/icons/Business';
 // TODO: differ logic of lists
 const CompanyListItem = (company: ListItemType, handlers: any, accessRights: string[] | []): JSX.Element => {
-  const companyName = company.otherNames;
+  const companyName = company.legalName;
 
   return (
     <ListItem
