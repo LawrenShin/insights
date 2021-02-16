@@ -89,7 +89,8 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
             {nameInsteadOfKey ?
               renderChip(nameInsteadOfKey, entity[key])
               :
-              meta[key]?.displayName ? `${meta[key]?.displayName}: ` : `${key[0].toUpperCase()}${key.substr(1, key.length)}`
+              // meta[key]?.displayName ? `${meta[key]?.displayName}: ` : `${key[0].toUpperCase()}${key.substr(1, key.length)}`
+              `${meta[key]?.displayName}: `
             }<br/>
           </span>
           {renderField(

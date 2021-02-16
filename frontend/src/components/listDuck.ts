@@ -249,6 +249,7 @@ export function InitReducer (listName: string) {
     // TODO: needs refactor
     if (type === ListActionTypes.LIST_DELETE_SUCCESS || type === ListActionTypes.LIST_UPDATE) {
       const isUpdate = type === ListActionTypes.LIST_UPDATE;
+      const {data} = action.payload;
 
       if (payload.url === 'companies' && state.data.data?.companies) {
         return {
@@ -258,13 +259,23 @@ export function InitReducer (listName: string) {
             data: {
               ...state.data.data,
               companies: isUpdate ?
-                [...state.data.data.companies, action.payload.data]
+                // differ create from update by id
+                +data.id === 0 ?
+                  [...state.data.data.companies, data]
+                  :
+                  // running from a problem
+                  // @ts-ignore
+                  [...state.data.data.companies.map((company: any) => {
+                    if (company.id === data.id) return {...company, ...data};
+                    return company;
+                  })]
               :
                 state.data.data.companies.filter((company: any) => company.id !== payload.id),
             },
             status: RequestStatus.STILL,
           },
-          selected: null,
+          // differ create from update by id
+          selected: +data.id === 0 ? null : data,
         }
       }
       if (payload.url === 'people' && listName === 'companies') {
