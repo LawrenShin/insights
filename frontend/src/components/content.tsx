@@ -84,13 +84,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
         personCleared = rest
       }
       if (key !== 'people' && key !== 'roles') {
-        return <div
-          style={{
-            borderBottom: index === Object.keys(entity).length - 1 ? '1px solid black' : 'none',
-            marginTop: '5px',
-          }}
-          key={uuidv4()}
-        >
+        return <div key={uuidv4()}>
           <span className={styles.fieldName}>
             {nameInsteadOfKey ?
               renderChip(nameInsteadOfKey, entity[key])
@@ -191,12 +185,12 @@ const Content = (props: Props) => {
           {callCompanyForm()}
         </Box>
       </Box>
-      {(dicts && meta) ? <Box>
+      {(dicts && meta) ? <Box className={tab !== Tabs.CONTENT ? styles.personContainer : ''}>
         {tab === Tabs.CONTENT && renderFields(data, dicts, renderChip, styles, meta.company)}
 
         {tab === Tabs.EXECUTIVES && <>
           {renderGoBack()}
-          {executives.length ?renderFields(executives, dicts, renderChip, styles, meta.person) : <h5>No Executives were added</h5>}
+          {executives.length ? renderFields(executives, dicts, renderChip, styles, meta.person) : <h5>No Executives were added</h5>}
         </>}
 
         {tab === Tabs.BOARDS && <>

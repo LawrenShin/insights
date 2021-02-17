@@ -36,6 +36,17 @@ export default makeStyles(
     loaderForChip: {
       color: 'white',
       marginLeft: '5px',
+    },
+    personContainer: {
+      justifyContent: 'space-around',
+      display: 'flex',
+      flexWrap: 'wrap',
+      '& > div': {
+        marginTop: '5px',
+        flexBasis: '40%',
+        border: '1px solid black',
+        padding: '10px',
+      }
     }
   })
 );
