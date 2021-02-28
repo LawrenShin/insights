@@ -19,6 +19,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import {ConnectedSearch} from "../components/fields";
 
 
+
 const Companies = (props: any) => {
   const {
     data: companiesData, selected: company,
@@ -34,6 +35,7 @@ const Companies = (props: any) => {
   // TODO: move to redux... or not?
   const [pageSize, setPageSize] = useState<number>(companiesData?.data?.pagination.pageSize | 10);
   const [page, setPage] = useState<number>(companiesData?.data?.pagination.page | 0);
+  const [search, setSearch] = useState<string>('');
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -58,7 +60,7 @@ const Companies = (props: any) => {
   useEffect(() => {
     loadList({
       url: 'companies',
-      params: `page_size=${pageSize}&page_index=${page}`,
+      params: `search_prefix=${search}&page_size=${pageSize}&page_index=${page}`,
     });
   }, [page]);
 
@@ -100,6 +102,7 @@ const Companies = (props: any) => {
             label="Search"
             name="companies"
             pagination={`page_index=${page}&page_size=${pageSize}`}
+            pullSearchValue={(search: string) => setSearch(search)}
             className={classes.searchBar}
           />
         </>)}

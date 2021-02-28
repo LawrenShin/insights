@@ -2,6 +2,7 @@ import {CreateAction} from "../../store/action";
 import {Dictionaries, Meta, RequestStatus} from "./types";
 import {fetchDicts, fetchMeta} from "./index";
 import {call, put, takeLatest} from "redux-saga/effects";
+import {logout} from "../listDuck";
 
 
 export enum DictActionTypes {
@@ -66,8 +67,12 @@ export function* workerSaga (action: DictActionType | MetaActionType) {
   try {
     const result = yield call(isDict ? fetchDicts : fetchMeta);
     yield put(isDict ? loadDictSuccess(result) : loadMetaSuccess(result));
-  } catch ({error: message}) {
-    yield put(isDict ? loadDictFail(message) : loadMetaFail(message));
+  //  TODO: check solution
+  } catch ({error: {message, status}}) {
+    if (status !== 403) {
+      yield put(isDict ? loadDictFail(message) : loadMetaFail(message));
+    }
+    yield put(logout());
   }
 }
 

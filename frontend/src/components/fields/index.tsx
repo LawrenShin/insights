@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {
   useField,
@@ -84,18 +84,22 @@ interface SearchDispatchProps {
 }
 interface SearchOwnProps {
   pagination: string;
+  pullSearchValue?: (search: string) => void;
 }
-export const Search: React.FC<InputProps & SearchDispatchProps> = (
+export const Search: React.FC<InputProps & SearchDispatchProps & SearchOwnProps> = (
   {
     name,
     label,
     className,
     fetchItem,
     clearSearch,
+    pullSearchValue,
     ...props
   }
 ) => {
   const [value, setValue]= useState<any>(null);
+  const [search, setSearch] = useState<string>('');
+
   const timeout: TimerHandler = (value: string | number) => {
     if (value) {
       return fetchItem(name, value);
@@ -103,6 +107,10 @@ export const Search: React.FC<InputProps & SearchDispatchProps> = (
     setValue(null);
     return clearSearch(name);
   }
+
+  useEffect(() => {
+    if (pullSearchValue) pullSearchValue(search);
+  }, [search]);
 
   return <TextField
     id={`search`}
@@ -113,7 +121,8 @@ export const Search: React.FC<InputProps & SearchDispatchProps> = (
         clearTimeout(value);
         setValue(null);
       }
-      setValue(setTimeout(timeout, 1000, e.target.value))
+      setValue(setTimeout(timeout, 1000, e.target.value));
+      setSearch(e.target.value);
     }}
   />
 }

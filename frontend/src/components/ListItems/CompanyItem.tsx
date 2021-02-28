@@ -5,7 +5,11 @@ import {ListItemType} from "./types";
 import BusinessIcon from '@material-ui/icons/Business';
 // TODO: differ logic of lists
 const CompanyListItem = (company: ListItemType, handlers: any, accessRights: string[] | []): JSX.Element => {
-  const companyName = company.legalName;
+  const {legalName, otherNames} = company;
+  const nonLatinRegex = /[^\x00-\x7F]+/gi;
+  const name = (
+    typeof legalName === 'string' && !legalName.match(nonLatinRegex) && legalName
+  ) ? legalName : otherNames;
 
   return (
     <ListItem
@@ -18,7 +22,7 @@ const CompanyListItem = (company: ListItemType, handlers: any, accessRights: str
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={companyName}
+        primary={name}
       />
       <ListItemSecondaryAction>
         <IconButton

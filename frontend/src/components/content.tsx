@@ -83,7 +83,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
         nameInsteadOfKey = entity[key]?.name;
         personCleared = rest
       }
-      if (key !== 'people' && key !== 'roles') {
+      if (key !== 'people' && key !== 'roles' && meta[key]?.displayName) {
         return <div key={uuidv4()}>
           <span className={styles.fieldName}>
             {nameInsteadOfKey ?
