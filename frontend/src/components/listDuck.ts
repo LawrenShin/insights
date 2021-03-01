@@ -139,14 +139,14 @@ export function* getSaga( action: ListActionType ) {
     yield put(loadSuccess({url: action.payload?.url, list}));
   } catch (error) {
     if (action.payload.hasOwnProperty('url')) {
+      if (error.message === '403') yield put(logout());
+
       if (error.status !== 403) {
         yield put(loadListFail({
           url: action.payload.url,
           error: error.message,
         }))
       }
-      // TODO: better have an interceptor for this
-      yield put(logout());
     }
   }
 }

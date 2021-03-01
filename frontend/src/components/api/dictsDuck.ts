@@ -68,11 +68,11 @@ export function* workerSaga (action: DictActionType | MetaActionType) {
     const result = yield call(isDict ? fetchDicts : fetchMeta);
     yield put(isDict ? loadDictSuccess(result) : loadMetaSuccess(result));
   //  TODO: check solution
-  } catch ({error: {message, status}}) {
-    if (status !== 403) {
-      yield put(isDict ? loadDictFail(message) : loadMetaFail(message));
+  } catch (error) {
+    if (error.message === '403') yield put(logout());
+    if (error.status !== 403) {
+      yield put(isDict ? loadDictFail(error.message) : loadMetaFail(error.message));
     }
-    yield put(logout());
   }
 }
 

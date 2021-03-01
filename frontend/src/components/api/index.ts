@@ -54,20 +54,20 @@ export async function fetchCompanies(params: string) {
 export async function fetchDicts() {
   const response = await get(`dictionaries`);
   const parsed = await response.json();
-  if (!response.ok) throw new Error(parsed.error);
+  if (!response.ok) throw new Error(parsed.status);
   return parsed;
 }
 export async function fetchMeta() {
   const response = await get(`metadata`);
   const parsed = await response.json();
-  if (!response.ok) throw new Error(parsed.error);
+  if (!response.ok) throw new Error(parsed.status);
   return parsed;
 }
 
 export async function fetchList(config: ListRequestConfig) {
   const response = await get(config.url, config?.params);
   const parsed = await response.json();
-  if (!response.ok) throw new Error(parsed.error);
+  if (!response.ok) throw new Error(parsed.status);
   return parsed;
 }
 
