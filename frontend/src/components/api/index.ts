@@ -53,14 +53,21 @@ export async function fetchCompanies(params: string) {
 
 export async function fetchDicts() {
   const response = await get(`dictionaries`);
-  return await response.json();
+  const parsed = await response.json();
+  if (!response.ok) throw new Error(parsed.error);
+  return parsed;
 }
 export async function fetchMeta() {
   const response = await get(`metadata`);
-  return await response.json();
+  const parsed = await response.json();
+  if (!response.ok) throw new Error(parsed.error);
+  return parsed;
 }
 
 export async function fetchList(config: ListRequestConfig) {
   const response = await get(config.url, config?.params);
-  return await response.json();
+  const parsed = await response.json();
+  if (!response.ok) throw new Error(parsed.error);
+  return parsed;
 }
+
