@@ -72,6 +72,9 @@ export default makeStyles((theme: Theme) =>
     error: {
       marginBottom: '20px',
       fontSize: '0.9em',
-    }
+    },
+    array: {
+      '& button' :{marginTop: '10px'},
+    },
   }),
 );

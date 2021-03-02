@@ -8,6 +8,7 @@ import {listDelete, ListRequestConfig, loadList} from "./listDuck";
 import {RootState} from "../store/rootReducer";
 import {DictItem} from "./api/types";
 import Loader from "./loader";
+import {loadDicts, loadMeta} from "./api/dictsDuck";
 
 enum Roles {
   EXECUTIVES = 1,
@@ -83,7 +84,8 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
         nameInsteadOfKey = entity[key]?.name;
         personCleared = rest
       }
-      if (key !== 'people' && key !== 'roles' && meta[key]?.displayName) {
+
+      if (key !== 'people' && key !== 'roles' && key !== 'isoCode') {
         return <div key={uuidv4()}>
           <span className={styles.fieldName}>
             {nameInsteadOfKey ?
@@ -123,10 +125,16 @@ const Content = (props: Props) => {
   const filterByRoles = <T extends unknown>(people: T[], role: Roles):T[] =>
     people.filter((person: any) => person.role.roleType === role || person.role.roleType === Roles.BOTH);
 
+
   useEffect(() => {
     setExecutives(filterByRoles(data.people, Roles.EXECUTIVES))
     setBoards(filterByRoles(data.people, Roles.BOARD))
   }, [data, data.people]);
+
+  useEffect(() => {
+    if (!dicts) loadDicts();
+    if (!meta) loadMeta();
+  }, [dicts, meta]);
 
 
   const renderChip = (name: string, entity: any) => <Chip
@@ -213,6 +221,8 @@ export default connect(
   }),
   (dispatch: Dispatch) => ({
     loadList: (config: ListRequestConfig) => dispatch(loadList(config)),
+    loadDicts: () => dispatch(loadDicts()),
+    loadMeta: () => dispatch(loadMeta()),
     deletePerson: (config: ListRequestConfig) => dispatch(listDelete(config)),
   })
 )(Content);

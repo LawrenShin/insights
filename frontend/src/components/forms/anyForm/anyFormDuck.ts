@@ -43,9 +43,8 @@ function* workerSaga(action: SubmitAnyFormAction) {
     yield put(
       CreateAction(
         AnyFormActionTypes.ANY_FORM_SUCCESS,
-        {
-          formName: action.payload.formName,
-        })
+        { formName: action.payload.formName }
+      )
     );
     // Confusing updates
     yield put(
