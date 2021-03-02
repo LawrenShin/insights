@@ -279,8 +279,12 @@ export function InitReducer (listName: string) {
         }
       }
       if (payload.url === 'people' && listName === 'companies') {
+        const presentPerson = state.selected.people.filter((person: any) => person.id === payload.data.id)[0];
         const newPeople = isUpdate ?
-          [...state.selected.people, action.payload.data]
+          !presentPerson ?
+            [...state.selected.people, action.payload.data]
+            :
+            [...state.selected.people.map((person: any) => person.id === data.id ? data : person)]
           :
           state.selected.people.filter((person: any) => person.id !== payload.id);
 

@@ -61,7 +61,7 @@ export const Checkbox: React.FC<InputProps> = ({ children, ...props }) => {
   );
 };
 
-export const Select: React.FC<InputProps> = ({ label, ...props }) => {
+export const Select: React.FC<InputProps & {onChange?: (e: any) => void}> = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <div>

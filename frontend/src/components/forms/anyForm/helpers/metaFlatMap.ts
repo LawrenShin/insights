@@ -10,7 +10,7 @@ export const metaFlatMap = (meta: any, metaMap: MetaMapType): MetaMapType => {
       displayName,
     } = meta[key];
 
-    if (fieldType !== MetaFieldTypes.NestedEntity && fieldType.toLowerCase() !== MetaFieldTypes.Array) {
+    if (fieldType !== MetaFieldTypes.NestedEntity && fieldType.toLowerCase()) {
       metaMap.set(key, {
         type: typeRenaming(fieldType.toLowerCase(), true),
         displayName,

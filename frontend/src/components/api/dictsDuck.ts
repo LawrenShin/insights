@@ -63,7 +63,7 @@ export const loadMetaFail = (error: string) => CreateAction(MetaActionTypes.META
 
 
 export function* workerSaga (action: DictActionType | MetaActionType) {
-  const isDict = yield action.type === DictActionTypes.DICT_LOAD;
+  const isDict: boolean = yield action.type === DictActionTypes.DICT_LOAD;
   try {
     const result = yield call(isDict ? fetchDicts : fetchMeta);
     yield put(isDict ? loadDictSuccess(result) : loadMetaSuccess(result));

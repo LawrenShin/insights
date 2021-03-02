@@ -1,17 +1,18 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
-import {Form, Formik} from "formik";
+import {FieldArray, Form, Formik} from "formik";
 import * as Yup from 'yup';
 import useStyles from './styles';
 import {MetaFieldTypes} from "./helpers/valuesInitter";
 import {MetaMapType} from "./helpers/metaFlatMap";
-import {Dictionaries, RequestStatus} from "../../api/types";
+import {Country, Dictionaries, DictItem, RequestStatus} from "../../api/types";
 import {renderField} from "./helpers/renderFields";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import {Tooltip} from "@material-ui/core";
 import {RootState} from "../../../store/rootReducer";
 import {AnyFormType} from "./anyFormDuck";
 import Loader from '../../loader';
+import {Select} from "../../fields";
 
 export interface InitialValuesType {
   [key: string]: string | number | null | string[] | number[] | boolean | {};
@@ -61,16 +62,6 @@ const AnyForm = ({
           <h1 className={classes.title}>
             {`${formName.replace(formName.charAt(0), formName.charAt(0).toUpperCase())} form`}
           </h1>
-          {/*<button*/}
-          {/*  className={tab === Tabs.FIELDS ? classes.selectedTab : ''}*/}
-          {/*  onClick={() => setTab(Tabs.FIELDS)}>*/}
-          {/*  Fields*/}
-          {/*</button>*/}
-          {/*<button*/}
-          {/*  className={tab === Tabs.ARRAYS ? classes.selectedTab : ''}*/}
-          {/*  onClick={() => setTab(Tabs.ARRAYS)}>*/}
-          {/*  Array fields*/}
-          {/*</button>*/}
         </div>
         <div className={classes.closeIcon}>
           <Tooltip
@@ -89,14 +80,61 @@ const AnyForm = ({
           onSubmit={values => handleSubmit(values)}
           validationSchema={schema}
         >
-          {({ initialValues, values }) => <Form>
+          {({ initialValues, values, setValues }) => <Form>
             {
               Object.keys(entity).map((key) => {
                 const fieldTypeIsNested = entity[key].fieldType === MetaFieldTypes.NestedEntity;
-                // const fieldTypeIsArr = entity[key].fieldType.toLowerCase() === MetaFieldTypes.Array;
+                const fieldTypeIsArr = entity[key].fieldType.toLowerCase() === MetaFieldTypes.Array;
                 // const renderArrRelated = fieldTypeIsArr && tab === Tabs.ARRAYS;
 
-                if (!fieldTypeIsNested && tab !== Tabs.ARRAYS) {
+                {/* TODO: didnt make it flexible*/}
+                if (fieldTypeIsArr && entity?.nationalities) return <>
+                  <h4>{entity.nationalities.displayName}</h4>
+                  {
+                    <FieldArray
+                      name={key}
+                      render={arrayHelpers => (
+                        <div className={classes.array}>
+                          {values[key]?.map((nationality: any, index: number) => (
+                            <div key={index}>
+                              <Select
+                                name={`country_${index}`}
+                                // value={values[key][index].country}
+                                onChange={(e) => {
+                                  values = {
+                                    ...values,
+                                    nationalities: [...values.nationalities.map((nationality: any, i: number) =>
+                                      index === i ? {country: e.target.value} : nationality
+                                    )]
+                                  };
+                                  setValues(values);
+                                }}
+                              >
+                                {dicts['country']?.map(
+                                  (option: Country) => <option value={option.id}>{option.name}</option>
+                                )}
+                              </Select>
+                              <button
+                                type="button"
+                                onClick={() => arrayHelpers.remove(index)}
+                              >
+                                remove
+                              </button>
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => arrayHelpers.push({country: 0})}
+                          >
+                            add
+                          </button>
+                        </div>
+                      )}
+                    />
+                  }
+                  </>
+
+                if (!fieldTypeIsNested) {
                   return <>
                     {/*{renderArrRelated && <h4>{entity[key].displayName}</h4>}*/}
                     {renderField(
@@ -111,7 +149,7 @@ const AnyForm = ({
                   </>
                 }
 
-                if (fieldTypeIsNested && tab === Tabs.FIELDS) return <>
+                if (fieldTypeIsNested) return <>
                   <h4>{entity[key].displayName}</h4>
                   <div className={classes.subEntity}>
                     {

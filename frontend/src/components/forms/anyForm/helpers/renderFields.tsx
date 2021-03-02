@@ -24,7 +24,7 @@ export const renderField = (
   externalKey?: string,
   customOnChange?: (values: any) => void,
 ): JSX.Element => {
-  if (key !== 'isEditable' && !key.match(/^[\w+]+Id$|^id$/gi)) {
+  if (key !== 'isEditable' && !key.match(/^[\w+]+Id$|^id$/gi) && key !== 'isoCode') {
     const type = metaTypesMap.get(key)?.type;
     const displayName = metaTypesMap.get(key)?.displayName;
     const name = (index !== undefined) ? `${externalKey}.${key}.${index}` : key;
@@ -36,7 +36,7 @@ export const renderField = (
       label: type !== MetaFieldTypes.Boolean ? displayName : undefined,
       [nameForValueField]: values[key] === undefined ? null : values[key],
     };
-    if (tab === Tabs.ARRAYS) {
+    if (key === MetaFieldTypes.Array) {
       // existing values of arrays render
       if (index !== undefined) {
         if (externalKey) {
