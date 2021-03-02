@@ -1,7 +1,8 @@
 import {CreateAction} from "../../store/action";
 import {Dictionaries, Meta, RequestStatus} from "./types";
 import {fetchDicts, fetchMeta} from "./index";
-import {call, put, takeLatest} from "redux-saga/effects";
+import {put, takeLatest} from "redux-saga/effects";
+import { call } from "typed-redux-saga";
 import {logout} from "../listDuck";
 
 
@@ -65,7 +66,7 @@ export const loadMetaFail = (error: string) => CreateAction(MetaActionTypes.META
 export function* workerSaga (action: DictActionType | MetaActionType) {
   const isDict: boolean = yield action.type === DictActionTypes.DICT_LOAD;
   try {
-    const result = yield call(isDict ? fetchDicts : fetchMeta);
+    const result = yield* call(isDict ? fetchDicts : fetchMeta);
     yield put(isDict ? loadDictSuccess(result) : loadMetaSuccess(result));
   //  TODO: check solution
   } catch (error) {

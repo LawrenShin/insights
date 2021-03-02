@@ -35,6 +35,13 @@ export const del = ({ url, params }: ListRequestConfig) =>
     referrerPolicy: 'no-referrer',
   })
 
+export async function deleteReq(config: ListRequestConfig) {
+  const response = await del(config);
+  const parsed = await response.json();
+  if (!response.ok || response.status !== 200) throw new Error(parsed.status);
+  return parsed;
+}
+
 // TODO: can refactor these and place 'em all in one
 export async function fetchToken(creds: Creds) {
   const response = await post(`login`, creds);
@@ -70,4 +77,5 @@ export async function fetchList(config: ListRequestConfig) {
   if (!response.ok || response.status !== 200) throw new Error(parsed.status);
   return parsed;
 }
+
 

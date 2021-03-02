@@ -1,8 +1,9 @@
 import {ListItemType} from "../components/ListItems/types";
 import {CreateAction} from "../store/action";
 import {RequestStatus} from "../components/api/types";
-import {call, put, takeLatest} from "redux-saga/effects";
-import {del, fetchList} from "./api";
+import {put, takeLatest} from "redux-saga/effects";
+import {call} from 'typed-redux-saga';
+import {deleteReq, fetchList} from "./api";
 import {AnyFormActionTypes} from "./forms/anyForm/anyFormDuck";
 import {TokenActionTypes} from "./forms/types";
 
@@ -135,7 +136,7 @@ export const getPagination = (state: ListStateType) => state.data.data?.paginati
 // sagas
 export function* getSaga( action: ListActionType ) {
   try {
-    const list = yield call(fetchList, action.payload as ListRequestConfig);
+    const list = yield* call(fetchList, action.payload as ListRequestConfig);
     yield put(loadSuccess({url: action.payload?.url, list}));
   } catch (error) {
     if (action.payload.hasOwnProperty('url')) {
@@ -152,14 +153,12 @@ export function* getSaga( action: ListActionType ) {
 }
 export function* deleteSaga(action: ListActionType) {
   try {
-    const res = yield call(del, action.payload);
-    const parsed = yield Promise.resolve(res.json());
-    if (!res.ok || res.status !== 200) throw new Error(parsed.status);
+    const res = yield* call(deleteReq, action.payload);
     yield put(CreateAction(
       ListActionTypes.LIST_DELETE_SUCCESS,
       {
         url: action.payload.url,
-        id: parsed.id
+        id: res.id
       }));
   //  TODO: delete element from selected arr if person and call company by id to update it in companies list
   //  TODO: If company were deleted, clear selected and remove it from array of companies

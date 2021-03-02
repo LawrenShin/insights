@@ -1,4 +1,5 @@
-import {call, put, takeEvery} from 'redux-saga/effects';
+import {put, takeEvery} from 'redux-saga/effects';
+import {call} from 'typed-redux-saga';
 import {Creds, FetchTokenAction, LogoutAction, Token, TokenActionTypes} from "./types";
 import {RequestStatus} from "../api/types";
 import {fetchToken} from "../api";
@@ -17,7 +18,7 @@ const initState = {
 
 function* workerSaga(action: FetchTokenAction) {
   try {
-    const token = yield call(fetchToken, action.payload as Creds);
+    const token = yield* call(fetchToken, action.payload as Creds);
     yield put(CreateAction(TokenActionTypes.FETCH_TOKEN_SUCCESS, token));
   } catch (error) {
     yield put(CreateAction(TokenActionTypes.FETCH_TOKEN_FAIL, error.message));
