@@ -153,12 +153,13 @@ export function* getSaga( action: ListActionType ) {
 export function* deleteSaga(action: ListActionType) {
   try {
     const res = yield call(del, action.payload);
-    const resolved = yield Promise.resolve(res.json());
+    const parsed = yield Promise.resolve(res.json());
+    if (!res.ok || res.status !== 200) throw new Error(parsed.status);
     yield put(CreateAction(
       ListActionTypes.LIST_DELETE_SUCCESS,
       {
         url: action.payload.url,
-        id: resolved.id
+        id: parsed.id
       }));
   //  TODO: delete element from selected arr if person and call company by id to update it in companies list
   //  TODO: If company were deleted, clear selected and remove it from array of companies
