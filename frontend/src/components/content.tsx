@@ -29,6 +29,8 @@ interface StateProps {
 }
 interface DispatchProps {
   loadList: (config: ListRequestConfig) => void;
+  loadDicts: () => void;
+  loadMeta: () => void;
   deletePerson: (config: ListRequestConfig) => void;
 }
 interface Props extends DispatchProps, StateProps{
@@ -103,7 +105,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
             dicts,
             renderChip,
             styles,
-            meta[key]?.fieldType === 'NestedEntity' ? meta[key].meta : meta
+            (meta[key]?.fieldType === 'NestedEntity' || meta[key]?.fieldType === 'Array') ? meta[key].meta : meta
           )}
         </div>
       }
@@ -115,7 +117,7 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
 
 const Content = (props: Props) => {
   const styles = useStyles();
-  const {meta, data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson, accessRights} = props;
+  const {loadDicts, loadMeta, meta, data, title, callCompanyForm, callPersonForm, dicts, setSelectedPerson, deletePerson, accessRights} = props;
 
   const [tab, setTab] = useState<Tabs>(Tabs.CONTENT);
   const [clickedChip, setClickedChip] = useState<string>('');
@@ -135,7 +137,6 @@ const Content = (props: Props) => {
     if (!dicts) loadDicts();
     if (!meta) loadMeta();
   }, [dicts, meta]);
-
 
   const renderChip = (name: string, entity: any) => <Chip
     avatar={
