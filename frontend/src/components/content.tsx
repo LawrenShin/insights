@@ -9,37 +9,7 @@ import {RootState} from "../store/rootReducer";
 import {DictItem} from "./api/types";
 import Loader from "./loader";
 import {loadDicts, loadMeta} from "./api/dictsDuck";
-
-enum Roles {
-  EXECUTIVES = 1,
-  BOARD,
-  BOTH,
-}
-
-enum Tabs {
-  EXECUTIVES,
-  BOARDS,
-  CONTENT,
-}
-
-interface StateProps {
-  accessRights: string[] | [];
-  dicts: any;
-  meta: any;
-}
-interface DispatchProps {
-  loadList: (config: ListRequestConfig) => void;
-  loadDicts: () => void;
-  loadMeta: () => void;
-  deletePerson: (config: ListRequestConfig) => void;
-}
-interface Props extends DispatchProps, StateProps{
-  data: any;
-  title: string;
-  setSelectedPerson: (person: any) => void;
-  callPersonForm: () => JSX.Element;
-  callCompanyForm: () => JSX.Element;
-}
+import {ExcludedFields, Props, Roles, Tabs} from "./types";
 
 
 // differ fields by types
@@ -84,10 +54,10 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
       if (typeof +key === 'number' && (entity[key]?.name)) {
         const {name, title, ...rest} = entity[key];
         nameInsteadOfKey = entity[key]?.name;
-        personCleared = rest
+        personCleared = rest;
       }
 
-      if (key !== 'people' && key !== 'roles' && key !== 'isoCode') {
+      if (!Object.values(ExcludedFields).includes(key)) {
         return <div key={uuidv4()}>
           <span className={styles.fieldName}>
             {nameInsteadOfKey ?
@@ -105,7 +75,9 @@ const renderFields = (entity: any, dicts: any, renderChip: any, styles: any, met
             dicts,
             renderChip,
             styles,
-            (meta[key]?.fieldType === 'NestedEntity' || meta[key]?.fieldType === 'Array') ? meta[key].meta : meta
+            (
+              meta[key]?.fieldType === 'NestedEntity' || meta[key]?.fieldType === 'Array'
+            ) ? meta[key].meta : meta
           )}
         </div>
       }
