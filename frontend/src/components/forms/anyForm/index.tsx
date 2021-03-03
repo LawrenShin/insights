@@ -87,7 +87,7 @@ const AnyForm = ({
                 const fieldTypeIsArr = entity[key].fieldType.toLowerCase() === MetaFieldTypes.Array;
                 // const renderArrRelated = fieldTypeIsArr && tab === Tabs.ARRAYS;
 
-                {/* TODO: didnt make it flexible*/}
+                {/* TODO: didnt make it flexible, works only with nationalities of person*/}
                 if (fieldTypeIsArr && entity?.nationalities) return <>
                   <h4>{entity.nationalities.displayName}</h4>
                   {
@@ -136,7 +136,6 @@ const AnyForm = ({
 
                 if (!fieldTypeIsNested) {
                   return <>
-                    {/*{renderArrRelated && <h4>{entity[key].displayName}</h4>}*/}
                     {renderField(
                       key,
                       initialValues[key],
@@ -169,92 +168,6 @@ const AnyForm = ({
                     }
                   </div>
                 </>
-                // TODO: needs refactor
-                // if (renderArrRelated && values !== null && Array.isArray(values[key])) return <>
-                //   <FieldArray name={key}>
-                //     {({ remove, push }) => (<>
-                //       <h4>{entity[key].displayName}</h4>
-                //       <div className={classes.subEntity}>
-                //
-                //       <>
-                //         {/* render existing */}
-                //         {
-                //           values[key].length > 0 && values[key].map((val: any, index: any) => {
-                //             return <div style={{
-                //               display: 'flex',
-                //               flexDirection: 'column',
-                //               borderBottom: '1px solid white'
-                //             }}>
-                //               {
-                //                 Object.keys(entity[key].meta).map(
-                //                   (innerKey) => {
-                //                     return innerKey !== 'isoCode' ? renderField(
-                //                       `${innerKey}`,
-                //                       // get vals here out of arr with index
-                //                       val[innerKey],
-                //                       metaTypesMap,
-                //                       dicts,
-                //                       values,
-                //                       tab,
-                //                       classes,
-                //                       index,
-                //                       key,
-                //                     ) : null
-                //                   }
-                //                 )
-                //               }
-                //               <button
-                //                 type="button"
-                //                 className="secondary"
-                //                 style={{ width: 'fit-content', marginTop: '10px' }}
-                //                 onClick={() => remove(index)}
-                //               >
-                //                 Remove
-                //               </button>
-                //             </div>
-                //           })
-                //         }
-                //          {/* render empty at last */}
-                //          <Sub
-                //            name={key}
-                //            push={push}
-                //            initialState={valuesInitter(entity[key].meta, {})}
-                //            schema={Yup.object(schemaInitter(entity[key].meta, {}))}
-                //            reactToChanges={(state: any) => {
-                //               setForArrays({
-                //                 ...forArrays,
-                //                   [key]: {...state}
-                //                 })
-                //              }
-                //            }
-                //            // gets real confusing here
-                //            renderFields={(setState: (newState: any) => void, state: any) => {
-                //              return Object.keys(entity[key].meta).map(
-                //                (innerKey) => {
-                //                  return innerKey !== 'isoCode' ? renderField(
-                //                    `${innerKey}`,
-                //                    // get vals here out of arr with index
-                //                    initialValues[innerKey],
-                //                    metaTypesMap,
-                //                    dicts,
-                //                    values,
-                //                    tab,
-                //                    classes,
-                //                    undefined,
-                //                    undefined,
-                //                    // custom onChange only for empty form of arrays
-                //                    (value) => setState({...state, ...value})
-                //                  ) : null
-                //                }
-                //              )
-                //            }}
-                //          />
-                //       </>
-                //       </div>
-                //     </>)}
-                //   </FieldArray>
-                // </>
-                // TODO: needs refactor
               })
             }
             <div className={classes.buttonsContainer}>

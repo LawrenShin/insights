@@ -59,7 +59,7 @@ const renderField = (element: any, fieldName: string, dicts: any, renderChip: an
   }
   if (Array.isArray(element)) {
     return element.length ? <div style={{marginLeft: '20px'}}>
-      {element.map((el: any) => <div>
+      {element.map((el: any) => <div key={uuidv4()}>
         {renderFields(el, dicts, renderChip, styles, meta)}
       </div>)}
     </div> : 'Empty';

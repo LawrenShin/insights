@@ -163,8 +163,7 @@ export function* deleteSaga(action: ListActionType) {
   //  TODO: delete element from selected arr if person and call company by id to update it in companies list
   //  TODO: If company were deleted, clear selected and remove it from array of companies
   } catch (error) {
-    yield console.log(error.message);
-    yield put(CreateAction(ListActionTypes.LIST_DELETE_FAIL, error));
+    yield put(CreateAction(ListActionTypes.LIST_DELETE_FAIL, error.message));
   }
 }
 export function* watcherSaga() {
@@ -279,7 +278,8 @@ export function InitReducer (listName: string) {
         }
       }
       if (payload.url === 'people' && listName === 'companies') {
-        const presentPerson = state.selected.people.filter((person: any) => person.id === payload.data.id)[0];
+        // after person delete id located directly in payload, when other times it's part of data object
+        const presentPerson = state.selected.people.filter((person: any) => person.id === payload?.data?.id || payload?.id)[0];
         const newPeople = isUpdate ?
           !presentPerson ?
             [...state.selected.people, action.payload.data]
