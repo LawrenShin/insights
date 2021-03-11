@@ -77,7 +77,7 @@ export const renderField = (
     if (type === MetaFieldTypes.Percentage) {
       return <Fields.Input
         {...props}
-        type={'number'}
+        type={'text'}
         max={100}
         min={0}
       />

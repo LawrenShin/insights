@@ -8,7 +8,7 @@ const CompanyListItem = (company: ListItemType, handlers: any, accessRights: str
   const {legalName, otherNames} = company;
   const nonLatinRegex = /[^\x00-\x7F]+/gi;
   const name = (
-    typeof legalName === 'string' && !legalName.match(nonLatinRegex) && legalName
+    (typeof legalName === 'string' && !legalName.match(nonLatinRegex) && legalName) || !otherNames
   ) ? legalName : otherNames;
 
   return (
